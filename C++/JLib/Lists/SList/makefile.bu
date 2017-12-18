@@ -1,0 +1,2 @@
+main: main.cpp singlelinkedlist.cpp ../../Node/node.cpp
+	g++ -o main main.cpp singlelinkedlist.cpp ../../Node/node.cpp
