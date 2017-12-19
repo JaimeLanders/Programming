@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include "slist.h" 
+#include "utility" 
 //#include "testdata.h" 
 #include "../../Data/data.h" 
 
@@ -127,10 +128,17 @@ int main ()
     else
         std::cout << nData << " not found" << std::endl;
 //bp1
-//    SList<Data<int>> dList2;//(dList);
-    SList<Data<int>> dList2;// = dList;
-//    dList2(dList);
-    dList2 = dList; // Assignment overload
+//    SList<Data<int>> dList2(dList); // Copy constructor
+
+//    SList<Data<int>> dList2 = dList; // Copy constructor
+
+//    SList<Data<int>> dList2;
+//    dList2 = dList; // Assignment overload
+
+//    SList<Data<int>> dList2(std::move(dList)); // Move constructor
+
+    SList<Data<int>> dList2;
+    dList2 = std::move(dList); // Move assignment overload
 
     mData.setData(321);
     dList.insert(mData);

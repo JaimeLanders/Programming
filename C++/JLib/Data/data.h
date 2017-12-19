@@ -78,10 +78,10 @@ public:
         if (debug)
             std::cout << "Data getData base " << std::endl;
  
-        return getData(ns...);
-//        return data;
+//        return getData(ns...);
+        return data;
     }
-    T getData(Ts... ns)
+/*    T getData(Ts... ns)
     {
         bool debug = false;
 //        bool debug = true;
@@ -91,7 +91,7 @@ public:
  
         return getData(ns...);
     }
-    void setData(T n) // Base case
+*/    void setData(T n) // Base case
     {
         bool debug = false;
 //        bool debug = true;
@@ -107,7 +107,7 @@ public:
         if (debug)
             std::cout << "data = " << data << std::endl;
     }
-    void setData(T n, Ts... ns)
+/*    void setData(T n, Ts... ns)
     { 
         bool debug = false;
 //        bool debug = true;
@@ -123,6 +123,6 @@ public:
         if (debug)
             std::cout << "data = " << data << std::endl;
     }
-};
+*/};
 
 #endif
