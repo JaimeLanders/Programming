@@ -10,10 +10,15 @@
  *  Implement DRY on everything.
  *      Delete node X
  *      Find and replace X
+ *      Insert X
  *  Implement const correctness X
  *  Swtich from debug statments to debug macros X 
+ *  Add push_back(T&&)
+ *  Add emplace_back(Args&&...)
  *  Implement iterator
  *      Return iterator from insert
+ *      Allow erase from iterator
+ *
  *  Copy as dlist and remove tail/insert/push_back.
  */
 
@@ -57,6 +62,8 @@ private:
     Node * head;
     Node * tail;
     size_t listsize;
+    void deleteNode(const Node*);                           // Delete node 
+    void erase(Node*);                                      // Erase from list  
 public:
     SList() : head(nullptr), tail(nullptr), listsize(0){}   // Default constructor
     SList(const T&);                                        // Custom constructor
@@ -67,18 +74,16 @@ public:
     SList<T>& operator = (SList<T>&&) noexcept;             // Move assignment overload 
     // Operations:
     void clear();                                           // Clear list 
-    void deleteNode(const Node*);                           // Delete node 
-    bool empty();                                           // Test if list empty
-    void erase(Node*);                                      // Erase from list  
+    bool empty() const;                                     // Test if list empty
     bool find_and_remove(const T&);                         // Find and remove from list 
     void insert(const T&);                                  // In order insert
-    void print();                                           // Print list
+    void print() const;                                     // Print list
     void pop_back();                                        // Removes head
     void pop_front();                                       // Removes head
     void push_back(const T&);                               // Insert at tail
     void push_front(const T&);                              // Insert at head
-    bool search(const T&);                                  // Search list
-    int size();                                             // Return size of list
+    bool search(const T&) const;                            // Search list
+    int size() const;                                       // Return size of list
 //    void swap (SList<T>& other ){ std::swap(this, other);}  // Swap container 
     friend std::ostream & operator << (std::ostream & os, const SList<T> & rhs)    // << Overload, needed?
     {
@@ -119,8 +124,6 @@ SList<T>::SList(const T & n)
     listsize = 0;
 
     insert(n);
-
-    return;
 }
 
 template<class T>
@@ -129,8 +132,6 @@ SList<T>::~SList()
     DEBUG("\nSList destructor ");
 
     this->clear();
-
-    return;
 }
 
 template<class T>
@@ -151,8 +152,6 @@ SList<T>::SList(const SList<T>& rhs)
     }
 
     DEBUG("nList.listsize = " << this->listsize);
-
-    return;
 }
 
 template<class T>
@@ -163,6 +162,7 @@ SList<T>::SList(SList<T>&& rhs)
     this->head = rhs.head;
     this->tail = rhs.tail;
     this->listsize = rhs.listsize;
+
     rhs.head = nullptr;
     rhs.tail = nullptr;
     rhs.listsize = 0;
@@ -216,8 +216,6 @@ void SList<T>::clear()
     }
     
     head = nullptr;
-
-    return;
 }
 
 template<class T>
@@ -230,7 +228,7 @@ void SList<T>::deleteNode(const Node * nodeIn)
 
 
 template<class T>
-bool SList<T>::empty()
+bool SList<T>::empty() const
 {
     DEBUG("\nSList empty ");
 
@@ -258,8 +256,6 @@ void SList<T>::erase(Node * nodeIn)
     nodeIn = prev->next;
     deleteNode(temp);
     listsize--;
-
-    return;
 }
 
 template<class T>
@@ -381,8 +377,6 @@ void SList<T>::insert(const T &n)
             }
        }
     }
-
-    return;
 }
 
 template<class T>
@@ -425,8 +419,6 @@ void SList<T>::pop_back()
             break;
         }
     }
-
-    return;
 }
 
 template<class T>
@@ -462,8 +454,6 @@ void SList<T>::pop_front()
             break;
         }
     }
-
-    return;
 }
 
 template<class T>
@@ -500,8 +490,6 @@ void SList<T>::push_back(const T &n)
 
         }
     }
-
-    return;
 }
 
 template<class T>
@@ -535,12 +523,10 @@ void SList<T>::push_front(const T &n)
         listsize++;
 
     }
-
-    return;
 }
 
 template<class T>
-void SList<T>::print()
+void SList<T>::print() const
 {
     DEBUG("\nSList print ");
     
@@ -553,40 +539,25 @@ void SList<T>::print()
         std::cout << it->data << std::endl;
         it = it->next;
     }
-
-    return;
 }
 
 template<class T>
-bool SList<T>::search(const T &n)
+bool SList<T>::search(const T &n) const
 {
     DEBUG("\nSList search ");
     DEBUG("n = " << n);
 
-    bool found = false;
-
     for (Node * it = head; it != nullptr; it = it->next)
     {
        if (it->data == n) 
-           found = true;
+           return true;
     }
 
-    if (found == true) 
-    {
-        DEBUG(n << " found ");
-
-        return true;
-    }
-    else
-    {
-        DEBUG(n << " not found ");
-
-        return false;
-    }
+    return false;
 }
 
 template<class T>
-int SList<T>::size()
+int SList<T>::size() const
 {
     DEBUG("\nSList size ");
 
