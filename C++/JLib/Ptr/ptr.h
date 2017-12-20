@@ -20,9 +20,10 @@ public:
     const T& operator * () const { return *ptr; }   // & Overload
     const T* operator -> () const { return *ptr; }  // -> Overload
     const T* operator = (T n) const { *ptr = n; }   // Works but synax not consistent with raw pointer
-    friend bool operator == (const Ptr<T>& d1, const Ptr<T>& d2)
+    friend bool operator == (const Ptr<T>& d1, std::nullptr_t)
+//    friend bool operator == (const Ptr<T>& d1, const Ptr<T>& d2)
     {
-        if (d1.ptr == d2.ptr)
+        if (d1.ptr == nullptr)
             return true;
         else
             return false;

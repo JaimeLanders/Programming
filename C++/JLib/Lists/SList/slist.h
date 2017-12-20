@@ -1,18 +1,34 @@
-/*  TODO:
+/*  Title:   SList.h
+ *  Creator: Jaime "jland13" Landers
+ *  Purpose: Singly linked list for educational purposes and future use
+ *  Sources: Too many to list
  *
- * Implement rule of 5 X
+ *  TODO:
+ *  Implement rule of 5 X
  *      Move constructor X
  *      Move assignment overload X
- * Implement DRY on everything.
+ *  Implement DRY on everything.
  *      Delete node X
- * Convert raw pointers to smart pointers.
- * Copy as dlist and remove tail/insert/push_back.
-*/
+ *      Find and replace X
+ *  Implement const correctness X
+ *  Swtich from debug statments to assertions
+ *  Implement iterator
+ *      Return iterator from insert
+ *  Implement smart pointers (some day)
+ *  Copy as dlist and remove tail/insert/push_back.
+ */
  
+
 #ifndef _SLIST_
 #define _SLIST_
+#define NDEBUG
+//#define _DEBUG
+//#ifdef _DEBUG
+#define DEBUG(x) do { std::cerr << x <<std::endl; } while (false)
+//#endif
 
 #include <algorithm>
+#include <assert.h>
 #include <iostream>
 #include <string>
 #include "../../Ptr/ptr.h"
@@ -23,70 +39,76 @@ class SList
 private:
     struct Node
     {
-        Node(){next = nullptr;};
+        Node(): next(nullptr), data{}{}
         ~Node(){};
-//        Ptr<Node> next; // Needs work
         Node * next;
         T data;
     };
-//    Ptr<Node> head(Node()); // Needs work
-//    Ptr<Node> tail(Node()); // Needs work
     Node * head;
     Node * tail;
     size_t listsize;
 public:
-//    SList() : tail(nullptr), listsize(0){}   // Default constructor
     SList() : head(nullptr), tail(nullptr), listsize(0){}   // Default constructor
+    ~SList();                                               // Destructor
     SList(const SList<T>&);                                 // Copy constructor
     SList(SList<T>&&);                                      // Move constructor
-//    SList(const SList<T>&&);                                // Move constructor
-    SList<T>& operator = (SList<T>&);                        // Assignment overload 
-//    SList<T>& operator = (const SList<T>&);                 // Assignment overload 
+    SList<T>& operator = (const SList<T>&);                 // Assignment overload 
     SList<T>& operator = (SList<T>&&) noexcept;             // Move assignment overload 
-    ~SList();                                               // Destructor
-    std::ostream& operator << (const SList<T>&);            // << Overload, needed?
+    // Operations:
     void clear();                                           // Clear list 
-    void deleteNode(Node*);                                 // Delete node 
+    void deleteNode(const Node*);                           // Delete node 
     bool empty();                                           // Test if list empty
+    void erase(Node*);                                      // Erase from list  
+//    void erase(const Node*);                                // Erase from list  
     bool find_and_remove(const T&);                         // Find and remove from list 
-    void insert(T);                                         // In order insert
+    void insert(const T&);                                  // In order insert
     void print();                                           // Print list
-    void push_back(T);                                      // Insert at tail
-    void push_front(T);                                     // Insert at head
-    bool search(T);                                         // Search list
+    void pop_back();                                        // Removes head
+    void pop_front();                                       // Removes head
+    void push_back(const T&);                               // Insert at tail
+    void push_front(const T&);                              // Insert at head
+    bool search(const T&);                                  // Search list
     int size();                                             // Return size of list
-//    friend void swap (const SList<T>& d1, const SList<T>& d2)           // Swap function
+//    void swap (SList<T>& other ){ std::swap(this, other);}  // Swap container 
+    friend std::ostream & operator << (std::ostream & os, const SList<T> & rhs)    // << Overload, needed?
+    {
+        bool debug = false;
+//        bool debug = true;
+
+        if (debug == true)
+        {
+            DEBUG("\nSList operator << overload ");
+        }
+
+        Node *it = rhs.head;
+
+        while (it != nullptr)
+        {
+            os << it->data << std::endl;
+            it = it->next;
+        }
+
+        os << rhs->data << std::endl;
+
+        return os;
+
+    }
     friend void swap (SList<T>& d1, SList<T>& d2)           // Swap function
     {
         bool debug = false;
 //        bool debug = true;
 
         if (debug == true)
-            std::cout << "SList swap " << std::endl;
+        {
+            DEBUG("SList swap ");
+        }
 
         std::swap(d1.head, d2.head);
         std::swap(d1.tail, d2.tail);
         std::swap(d1.listsize, d2.listsize);
     }
 };
-/*
-template<class T>
-SList<T>::SList()
-{
-    bool debug = false;
-//    bool debug = true;
 
-    if (debug == true)
-        std::cout << "SList constructor" << std::endl;
-
-    this->head = nullptr;
-    this->tail = nullptr;
-    this->listsize = 0;
-
-    return;
-
-}
-*/
 template<class T>
 SList<T>::~SList()
 {
@@ -94,7 +116,10 @@ SList<T>::~SList()
 //    bool debug = true;
 
     if (debug == true)
-        std::cout << "\nSList destructor" << std::endl;
+    {
+        DEBUG("SList destructor");
+    }
+
 
     this->clear();
 
@@ -108,7 +133,9 @@ SList<T>::SList(const SList<T>& rhs)
 //   bool debug = true;
 
     if (debug == true)
-        std::cout << "SList copy constructor" << std::endl;
+    {
+        DEBUG("SList copy constructor" );
+    }
 
     this->head = nullptr;
     this->tail = nullptr;
@@ -116,8 +143,6 @@ SList<T>::SList(const SList<T>& rhs)
    
     if(rhs.head != nullptr)
     {
-        this->head = nullptr; // Temp fix for new head not being null;
-
         for (Node * it = rhs.head; it == rhs.tail; it = it->next)
         {
             this->insert(it->data);
@@ -125,20 +150,23 @@ SList<T>::SList(const SList<T>& rhs)
     }
 
     if (debug == true)
-        std::cout << "nList.listsize = " << this->listsize << std::endl;
+    {
+        DEBUG("nList.listsize = " << this->listsize);
+    }
 
     return;
 }
 
 template<class T>
 SList<T>::SList(SList<T>&& rhs)
-//SList<T>::SList(const SList<T>&& rhs)
 {
-//    bool debug = false;
-    bool debug = true;
+    bool debug = false;
+//    bool debug = true;
 
     if (debug == true)
-        std::cout << "SList move copy constructor" << std::endl;
+    {
+        DEBUG("SList move copy constructor" );
+    }
 
     this->head = rhs.head;
     this->tail = rhs.tail;
@@ -150,18 +178,20 @@ SList<T>::SList(SList<T>&& rhs)
 }
 
 template<class T>
-SList<T>& SList<T>::operator = (SList<T> &rhs)
-//SList<T>& SList<T>::operator = (const SList<T>& rhs)
+SList<T>& SList<T>::operator = (const SList<T>& rhs)
 {
     bool debug = false;
 //    bool debug = true;
 
     if (debug == true)
-        std::cout << "\nSList assignment overload "  << std::endl;
+    {
+        DEBUG("\nSList assignment overload ");
+    }
 
     if (this != &rhs)
     {
-        swap(*this, rhs);
+        SList temp(rhs);
+        swap(*this, temp);
 
         return *this;
     }
@@ -174,7 +204,9 @@ SList<T>& SList<T>::operator = (SList<T>&& rhs) noexcept
     bool debug = true;
 
     if (debug == true)
-        std::cout << "\nSList move assignment overload "  << std::endl;
+    {
+        DEBUG("\nSList move assignment overload ");
+    }
 
     if (this != &rhs)
     {
@@ -187,22 +219,29 @@ SList<T>& SList<T>::operator = (SList<T>&& rhs) noexcept
     }
 }
 
-template<class T>
-std::ostream& operator<<(std::ostream& os, const SList<T>& rhs)
+/*template<class T>
+std::ostream & operator << (std::ostream & os, const SList<T>& rhs)
 {
 //    bool debug = false;
     bool debug = true;
 
     if (debug == true)
     {
-        std::cout << "\nSList operator << overload " << std::endl;
+        DEBUG("\nSList operator << overload ");
     }
 
+    Node *it = rhs.head;
+
+    while (it != nullptr)
+    {
+        os << it->data << std::endl;
+        it = it->next;
+    }
 //    os << param->data << std::endl;
     os << "testing " << std::endl;
 
     return os;
-}
+}*/
 
 template<class T>
 void SList<T>::clear()
@@ -211,8 +250,9 @@ void SList<T>::clear()
 //    bool debug = true;
 
     if (debug == true)
-        std::cout << "\nSList clear" << std::endl;
-    
+    {
+        DEBUG("\nSList clear ");
+    }
 
     Node *it = head;
     Node *temp = head;
@@ -231,13 +271,15 @@ void SList<T>::clear()
 }
 
 template<class T>
-void SList<T>::deleteNode(Node * nodeIn)
+void SList<T>::deleteNode(const Node * nodeIn)
 {
     bool debug = false;
 //    bool debug = true;
 
     if (debug == true)
-        std::cout << "\nSList deleteNode" << std::endl;
+    {
+        DEBUG("\nSList deleteNode");
+    }
 
     delete nodeIn;
 }
@@ -251,7 +293,9 @@ bool SList<T>::empty()
 //    bool debug = true;
 
     if (debug == true)
-        std::cout << "\nSList empty" << std::endl;
+    {
+        DEBUG("\nSList empty ");
+    }
 
     if (head == nullptr)
         return true;
@@ -260,89 +304,86 @@ bool SList<T>::empty()
 }
 
 template<class T>
-bool SList<T>::find_and_remove(const T& n)
+void SList<T>::erase(Node * nodeIn)
+//void SList<T>::erase(const Node * nodeIn)
 {
 //    bool debug = false;
     bool debug = true;
 
     if (debug == true)
     {
-        std::cout << "\nSList find_and_remove" << std::endl;
-        std::cout << "n = " << n << std::endl;
+        DEBUG("\nSList erase");
+    }
+
+    Node * temp = nodeIn;
+    Node * prev;
+
+    for (Node * it = head; it->next == nodeIn; it = (Node*)it->next)
+    {
+        prev = it;
+    }
+
+    prev->next = nodeIn->next;
+
+    nodeIn = prev->next;
+    deleteNode(temp);
+    listsize--;
+
+    return;
+}
+
+template<class T>
+bool SList<T>::find_and_remove(const T& n)
+{
+    bool debug = false;
+//    bool debug = true;
+
+    if (debug == true)
+    {
+        DEBUG("\nSList find_and_remove" );
+        DEBUG("n = " << n);
     }
 
     bool found = false;
 
-    for (Node * it = head; it != nullptr; it = (Node*)it->next)
+    for (Node * it = head; it != nullptr; it = it->next)
     {
        if (it->data == n) 
        {
            Node * temp;
 
-            if(it == head && it == tail) // Head and tail
+            if(it == head || (it == head && it == tail)) // Head or head and tail
             {
                 if (debug == true)
-                    std::cout << n << " is head and tail " << std::endl;
+                {
+                    DEBUG(n << " is head and tail ");
+                }
 
-                temp = head;
-                head = nullptr;
-                tail = nullptr;
+                pop_front(); 
                 it = nullptr;
-                deleteNode(temp);
-//                delete temp;
-                listsize--;
-                break; // Fix for segfault on empty list after
-            }
-            else if(it == head) // Head
-            {
-                if (debug == true)
-                    std::cout << n << " is head " << std::endl;
-
-                temp = head;
-                head = head->next;
-                it = head;
-                deleteNode(temp);
-//                delete temp;
-                listsize--;
+                break;
             }
             else if(it == tail) // Tail
             {
                 if (debug == true)
-                    std::cout << n << " is tail " << std::endl;
-
-                temp = tail;
-
-                for (Node * it2 = head; it2->next == tail; it2 = (Node*)it2->next)
                 {
-                    tail = it2;
-                    it2 = nullptr;
+                    DEBUG(n << " is tail ");
                 }
 
-                it = tail;
-                deleteNode(temp);
-//                delete temp; // Valgrind errors
-                listsize--;
+                pop_back(); 
+                it = nullptr;
+                break;
             }
             else // Not head or tail
             {
                 if (debug == true)
-                    std::cout << n << " is neither nor head or tail " << std::endl;
-
-                temp = it;
-
-                Node * prev;
-
-                for (Node * it2 = head; it2->next == it; it2 = (Node*)it2->next)
                 {
-                    prev = it2;
+                    DEBUG(n << " is neither head nor tail ");
                 }
 
-                prev->next = it->next;
-
-                it = prev->next;
-                deleteNode(temp);
-//                delete temp;
-                listsize--;
+                erase(it);
+                it = nullptr;
+                break;
            }
            found = true;
        }
@@ -351,29 +392,33 @@ bool SList<T>::find_and_remove(const T& n)
     if (found == true) 
     {
         if (debug == true)
-            std::cout << n << " found and deleted " << std::endl;
+        {
+            DEBUG(n << " found and deleted ");
+        }
 
         return true;
     }
     else
     {
         if (debug == true)
-            std::cout << n << " not found " << std::endl;
+        {
+            DEBUG(n << " not found ");
+        }
 
         return false;
     }
 }
 
 template<class T>
-void SList<T>::insert(T n)
+void SList<T>::insert(const T &n)
 {
     bool debug = false;
 //    bool debug = true;
 
     if (debug == true)
     {
-        std::cout << "\nSList insert" << std::endl;
-        std::cout << "n = " << n << std::endl;
+        DEBUG("\nSList insert ");
+        DEBUG("n = " << n);
     }
 
     Node * nNode = new Node; 
@@ -383,7 +428,9 @@ void SList<T>::insert(T n)
     if (head == nullptr) // Case 1: list empty
     {
         if (debug == true)
-            std::cout << "Creating new list " << std::endl;
+        {
+            DEBUG("Creating new list ");
+        }
 
         head = nNode;
         tail = nNode;
@@ -393,12 +440,16 @@ void SList<T>::insert(T n)
     else // Case 2: list not empy
     {
         if (debug == true)
-            std::cout << "Adding to list " << std::endl;
+        {
+            DEBUG("Adding to list ");
+        }
 
         if (n < head->data) // Case 2A : n is new head
         {
             if (debug == true)
-                std::cout << "New head " << std::endl;
+            {
+                DEBUG("New head ");
+            }
 
             nNode->next = head;
 
@@ -415,12 +466,16 @@ void SList<T>::insert(T n)
             while (it->next != nullptr)
             {
                 if (debug == true)
-                    std::cout << "it != nullptr " << std::endl;
+                {
+                    DEBUG("it != nullptr ");
+                }
 
                 if (n < it->data)
                 {
                     if (debug == true)
-                        std::cout << "n < it " << std::endl;
+                    {
+                        DEBUG("n < it ");
+                    }
 
                     nNode->next = it;
                     prev->next = nNode;
@@ -430,7 +485,9 @@ void SList<T>::insert(T n)
                 else
                 {
                     if (debug == true)
-                        std::cout << "it->next " << std::endl;
+                    {
+                        DEBUG("it->next ");
+                    }
                     prev = it;
                     it = (Node*)it->next;
                 }
@@ -439,7 +496,9 @@ void SList<T>::insert(T n)
             if (it->next == nullptr)
             {
                 if (debug == true)
-                    std::cout << "End of list " << std::endl;
+                {
+                    DEBUG("End of list ");
+                }
 
                 it->next = nNode; 
                 it->next->next = nullptr;
@@ -453,63 +512,119 @@ void SList<T>::insert(T n)
 }
 
 template<class T>
-void SList<T>::push_front(T n)
+void SList<T>::pop_back()
 {
-    bool debug = false;
-//    bool debug = true;
+//    bool debug = false;
+    bool debug = true;
 
     if (debug == true)
     {
-        std::cout << "\nSList push_front" << std::endl;
-        std::cout << "n = " << n << std::endl;
+        DEBUG("\nSList pop_back ");
     }
 
-    Node * nNode = new Node; 
-
-    nNode->data = n;
-
-    if (head == nullptr) // Case 1: list empty
+    for (Node * it = head; it != nullptr; it = it->next)
     {
-        if (debug == true)
-            std::cout << "Creating new list " << std::endl;
+           Node * temp;
 
-        head = nNode;
-        tail = nNode;
+           if(it == head && it == tail) // Head and tail
+           {
+                if (debug == true)
+                {
+                    DEBUG("popping head and tail ");
+                }
 
-        listsize++;
-    }
-    else // Case 2: list not empy
-    {
-        if (debug == true)
-            std::cout << "Adding to list " << std::endl;
+                temp = head;
+                head = nullptr;
+                tail = nullptr;
+                it = nullptr;
+                deleteNode(temp);
+                listsize--;
+                break; // Fix for segfault on empty list after
+            }
+            else if(it == tail) // Tail
+            {
+                if (debug == true)
+                {
+                    DEBUG("poppig tail ");
+                }
 
-//        if (n < head->data) // Case 2A : n is new head
-//        {
-            if (debug == true)
-                std::cout << "New head " << std::endl;
+                temp = tail;
 
-            nNode->next = head;
+                for (Node * it2 = head; it2->next == tail; it2 = it2->next)
+                {
+                    tail = it2;
+                }
 
-            head = nNode;
-
-            listsize++;
-
-        }
-//    }
+                it = tail;
+                it->next = nullptr;
+                deleteNode(temp);
+                temp = nullptr;
+                listsize--;
+                break;
+            }
+       }
 
     return;
 }
 
 template<class T>
-void SList<T>::push_back(T n)
+void SList<T>::pop_front()
 {
     bool debug = false;
 //    bool debug = true;
 
     if (debug == true)
     {
-        std::cout << "\nSList push_back" << std::endl;
-        std::cout << "n = " << n << std::endl;
+        DEBUG("\nSList pop_front ");
+    }
+
+    for (Node * it = head; it != nullptr; it = it->next)
+    {
+           Node * temp;
+
+           if(it == head && it == tail) // Head and tail
+           {
+                if (debug == true)
+                {
+                    DEBUG("popping head and tail ");
+                }
+
+                temp = head;
+                head = nullptr;
+                tail = nullptr;
+                it = nullptr;
+                deleteNode(temp);
+                listsize--;
+                break; // Fix for segfault on empty list after
+            }
+            else if(it == head) // Head
+            {
+                if (debug == true)
+                {
+                    DEBUG("Popping head ");
+                }
+
+                temp = head;
+                head = head->next;
+                it = head;
+                deleteNode(temp);
+                listsize--;
+                break;
+            }
+       }
+
+    return;
+}
+template<class T>
+void SList<T>::push_back(const T &n)
+{
+    bool debug = false;
+//    bool debug = true;
+
+    if (debug == true)
+    {
+        DEBUG("\nSList push_back");
+        DEBUG("n = " << n);
     }
 
     Node * nNode = new Node; 
@@ -519,7 +634,9 @@ void SList<T>::push_back(T n)
     if (head == nullptr) // Case 1: list empty
     {
         if (debug == true)
-            std::cout << "Creating new list " << std::endl;
+        {
+            DEBUG("Creating new list ");
+        }
 
         head = nNode;
         tail = nNode;
@@ -529,12 +646,16 @@ void SList<T>::push_back(T n)
     else // Case 2: list not empy
     {
         if (debug == true)
-            std::cout << "Adding to list " << std::endl;
+        {
+            DEBUG("Adding to list ");
+        }
 
         if (n < head->data) // Case 2A : n is new tail 
         {
             if (debug == true)
-                std::cout << "New tail " << std::endl;
+            {
+                DEBUG("New tail ");
+            }
 
 
             tail->next = nNode;
@@ -549,14 +670,69 @@ void SList<T>::push_back(T n)
 }
 
 template<class T>
+void SList<T>::push_front(const T &n)
+{
+    bool debug = false;
+//    bool debug = true;
+
+    if (debug == true)
+    {
+        DEBUG("\nSList push_front ");
+        DEBUG("n = " << n);
+    }
+
+    Node * nNode = new Node; 
+
+    nNode->data = n;
+
+    if (head == nullptr) // Case 1: list empty
+    {
+        if (debug == true)
+        {
+            DEBUG("Creating new list ");
+        }
+
+        head = nNode;
+        tail = nNode;
+
+        listsize++;
+    }
+    else // Case 2: list not empy
+    {
+        if (debug == true)
+        {
+            DEBUG("Adding to list ");
+        }
+
+            if (debug == true)
+            {
+                DEBUG("New head ");
+            }
+
+            nNode->next = head;
+
+            head = nNode;
+
+            listsize++;
+
+        }
+
+    return;
+}
+
+template<class T>
 void SList<T>::print()
 {
     bool debug = false;
 //    bool debug = true;
 
     if (debug == true)
-        std::cout << "\nSList print" << std::endl;
+    {
+        DEBUG("\nSList print ");
+    }
     
+//    std::cout << this << std::endl;
+
     Node * it = head;
 
     while (it != nullptr)
@@ -569,15 +745,15 @@ void SList<T>::print()
 }
 
 template<class T>
-bool SList<T>::search(T n)
+bool SList<T>::search(const T &n)
 {
     bool debug = false;
 //    bool debug = true;
 
     if (debug == true)
     {
-        std::cout << "\nSList search" << std::endl;
-        std::cout << "n = " << n << std::endl;
+        DEBUG("\nSList search ");
+        DEBUG("n = " << n);
     }
 
     bool found = false;
@@ -591,14 +767,18 @@ bool SList<T>::search(T n)
     if (found == true) 
     {
         if (debug == true)
+        {
             std::cout << n << " found " << std::endl;
+        }
 
         return true;
     }
     else
     {
         if (debug == true)
+        {
             std::cout << n << " not found " << std::endl;
+        }
 
         return false;
     }
@@ -611,24 +791,12 @@ int SList<T>::size()
 //    bool debug = true;
 
     if (debug == true)
+    {
         std::cout << "SList size " << std::endl;
+    }
 
     return listsize;
 }
-/*
-template<class T>
-void swap(SList<T>& d1, SList<T>& d2)
-//void swap(const SList<T>& d1, const SList<T>& d2)
-{
-//    bool debug = false;
-    bool debug = true;
 
-    if (debug == true)
-        std::cout << "SList swap " << std::endl;
-//bp2
-    std::swap(d1.head, d2.head);
-    std::swap(d1.tail, d2.tail);
-    std::swap(d1.listsize, d2.listsize);
-}
-*/
 #endif
+//#endif

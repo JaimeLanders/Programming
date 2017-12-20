@@ -5,39 +5,19 @@
 #include <iostream>
 #include "slist.h" 
 #include "utility" 
-//#include "testdata.h" 
 #include "../../Data/data.h" 
 
-//using namespace std;
-
-/*
-void search(char s[], SList<int> l)
-{
-    bool debug = false;
-//    bool debug = true;
-
-    if (cList.search(s) == true)
-        std::cout << s << " found" << std::endl;
-    else
-        std::cout << s << " not found" << std::endl;
-
-    return;
-}
-*/
 int main ()
 {
-    SList<int> nList;// = new SList; 
-    SList<char*> cList;// = new SList; 
-    SList<Data<int>> dList;// = new SList; 
-//    SList<Data<int>> dList2;// = new SList; 
-//    SList<Data<char *>> dList;// = new SList; 
+    SList<int> nList;
+    SList<char*> cList;
+    SList<Data<int>> dList;
     char mString [] = "one";
     char nString [] = "testing";
     char oString [] = "zzz";
     int nums [10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-//    Data<char *, int> nData;// = new testData;
-    Data<int> nData;// = new testData;
-    Data<int> mData;// = new testData;
+    Data<int> nData;
+    Data<int> mData;
 
     std::cout << "Welcome to SList Driver " << std::endl;
 /*
@@ -121,7 +101,8 @@ int main ()
     std::cout << "dList size = " << dList.size() << std::endl;;
 
     dList.print();
-//    dList.find_and_remove(nData); // Compile errors, needs == overload
+//    std::cout << dList << std::end;
+    dList.find_and_remove(nData);
 
     if (dList.search(nData) == true) // Compile errors, needs == overload
         std::cout << nData << " found" << std::endl;
@@ -132,13 +113,16 @@ int main ()
 
 //    SList<Data<int>> dList2 = dList; // Copy constructor
 
-//    SList<Data<int>> dList2;
-//    dList2 = dList; // Assignment overload
+    SList<Data<int>> dList2;
+    dList2 = dList; // Assignment overload
+
+//    const SList<Data<int>> dList3 = dList;
+//    dList2 = dList3; // Const assignment overload
 
 //    SList<Data<int>> dList2(std::move(dList)); // Move constructor
 
-    SList<Data<int>> dList2;
-    dList2 = std::move(dList); // Move assignment overload
+//    SList<Data<int>> dList2;
+//    dList2 = std::move(dList); // Move assignment overload
 
     mData.setData(321);
     dList.insert(mData);
@@ -148,6 +132,9 @@ int main ()
 
     std::cout << "dList2 size = " << dList2.size() << std::endl;;
     dList2.print();
+
+//    dList.pop_back();
+//    dList.pop_front();
 
     return 0;
 }

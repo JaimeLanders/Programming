@@ -1,3 +1,4 @@
+#include <memory> 
 #include "ptr.h"
 #include "../Data/data.h"
 
@@ -5,6 +6,7 @@ int main ()
 {
     Data<int> nData;
     Ptr<Data<int>> nPtr(new Data<int>());
+    std::unique_ptr<Data<int>> uPtr;
 //    Ptr<char *> n(new char*());
 //    Ptr<int> nPtr(new int());
 //    Ptr<int> n;
@@ -30,6 +32,12 @@ int main ()
 //    nPtr = &p;  // Invalid free  
 //    nPtr = p;   // Works with ptr = n overload 
     
+//    if (uPtr == nullptr)
+//        std::cout << "nPtr == nullptr " << std::endl;
+
+    if (nPtr == nullptr)
+        std::cout << "nPtr == nullptr " << std::endl;
+
     nData.setData(2);
     std::cout << "data = " << nData.getData() << std::endl;
 
