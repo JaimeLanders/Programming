@@ -30,8 +30,8 @@
 #endif
 
 //Debug macro:
-//#define _DEBUG
-#ifdef  _DEBUG
+#define SLIST_DEBUG
+#ifdef  SLIST_DEBUG
 #define DEBUG(x) do { std::cerr << x <<std::endl; } while (0)
 #else
 #define DEBUG(X)
@@ -49,6 +49,7 @@ private:
     struct Node
     {
         Node(): next(nullptr), data{}{}
+        Node(const  T &n): next(nullptr), data(n){}
         ~Node(){};
         Node * next;
         T data;
@@ -58,6 +59,7 @@ private:
     size_t listsize;
 public:
     SList() : head(nullptr), tail(nullptr), listsize(0){}   // Default constructor
+    SList(const T&);                                        // Custom constructor
     ~SList();                                               // Destructor
     SList(const SList<T>&);                                 // Copy constructor
     SList(SList<T>&&);                                      // Move constructor
@@ -80,9 +82,7 @@ public:
 //    void swap (SList<T>& other ){ std::swap(this, other);}  // Swap container 
     friend std::ostream & operator << (std::ostream & os, const SList<T> & rhs)    // << Overload, needed?
     {
-        #ifdef DEBUG
-            DEBUG("\nSList operator << overload ");
-        #endif
+        DEBUG("\nSList operator << overload ");
 
         Node *it = rhs.head;
 
@@ -99,9 +99,9 @@ public:
     }
     friend void swap (SList<T>& d1, SList<T>& d2)           // Swap function
     {
-        #ifdef DEBUG
+//        #ifdef DEBUG
             DEBUG("\nSList swap ");
-        #endif
+//        #endif
 
         std::swap(d1.head, d2.head);
         std::swap(d1.tail, d2.tail);
@@ -110,11 +110,23 @@ public:
 };
 
 template<class T>
+SList<T>::SList(const T & n)
+{
+    DEBUG("\nSList constructor ");
+
+    head = nullptr;
+    tail = nullptr;
+    listsize = 0;
+
+    insert(n);
+
+    return;
+}
+
+template<class T>
 SList<T>::~SList()
 {
-    #ifdef DEBUG
-        DEBUG("\nSList destructor ");
-    #endif   
+    DEBUG("\nSList destructor ");
 
     this->clear();
 
@@ -124,9 +136,7 @@ SList<T>::~SList()
 template<class T>
 SList<T>::SList(const SList<T>& rhs)
 {
-    #ifdef DEBUG
-        DEBUG("\nSList copy constructor ");
-    #endif   
+    DEBUG("\nSList copy constructor ");
 
     this->head = nullptr;
     this->tail = nullptr;
@@ -140,9 +150,7 @@ SList<T>::SList(const SList<T>& rhs)
         }
     }
 
-    #ifdef DEBUG
-        DEBUG("nList.listsize = " << this->listsize);
-    #endif   
+    DEBUG("nList.listsize = " << this->listsize);
 
     return;
 }
@@ -150,9 +158,7 @@ SList<T>::SList(const SList<T>& rhs)
 template<class T>
 SList<T>::SList(SList<T>&& rhs)
 {
-    #ifdef DEBUG
-        DEBUG("\nSList move copy constructor ");
-    #endif   
+    DEBUG("\nSList move copy constructor ");
 
     this->head = rhs.head;
     this->tail = rhs.tail;
@@ -166,9 +172,7 @@ SList<T>::SList(SList<T>&& rhs)
 template<class T>
 SList<T>& SList<T>::operator = (const SList<T>& rhs)
 {
-    #ifdef DEBUG
-        DEBUG("\nSList assignment overload ");
-    #endif   
+    DEBUG("\nSList assignment overload ");
 
     if (this != &rhs)
     {
@@ -182,9 +186,7 @@ SList<T>& SList<T>::operator = (const SList<T>& rhs)
 template<class T>
 SList<T>& SList<T>::operator = (SList<T>&& rhs) noexcept
 {
-    #ifdef DEBUG
-        DEBUG("\nSList move assignment overload ");
-    #endif   
+    DEBUG("\nSList move assignment overload ");
 
     if (this != &rhs)
     {
@@ -200,9 +202,7 @@ SList<T>& SList<T>::operator = (SList<T>&& rhs) noexcept
 template<class T>
 void SList<T>::clear()
 {
-    #ifdef DEBUG
-        DEBUG("\nSList clear ");
-    #endif   
+    DEBUG("\nSList clear ");
 
     Node *it = head;
     Node *temp = head;
@@ -223,9 +223,7 @@ void SList<T>::clear()
 template<class T>
 void SList<T>::deleteNode(const Node * nodeIn)
 {
-    #ifdef DEBUG
-        DEBUG("\nSList deleteNode ");
-    #endif   
+    DEBUG("\nSList deleteNode ");
 
     delete nodeIn;
 }
@@ -234,9 +232,7 @@ void SList<T>::deleteNode(const Node * nodeIn)
 template<class T>
 bool SList<T>::empty()
 {
-    #ifdef DEBUG
-        DEBUG("\nSList empty ");
-    #endif   
+    DEBUG("\nSList empty ");
 
     if (head == nullptr)
         return true;
@@ -247,9 +243,7 @@ bool SList<T>::empty()
 template<class T>
 void SList<T>::erase(Node * nodeIn)
 {
-    #ifdef DEBUG
-        DEBUG("\nSList erase ");
-    #endif   
+    DEBUG("\nSList erase ");
 
     Node * temp = nodeIn;
     Node * prev;
@@ -271,10 +265,8 @@ void SList<T>::erase(Node * nodeIn)
 template<class T>
 bool SList<T>::find_and_remove(const T& n)
 {
-    #ifdef DEBUG
-        DEBUG("\nSList find_and_remove " );
-        DEBUG("n = " << n);
-    #endif   
+    DEBUG("\nSList find_and_remove " );
+    DEBUG("n = " << n);
 
     bool found = false;
 
@@ -286,9 +278,7 @@ bool SList<T>::find_and_remove(const T& n)
 
             if(it == head || (it == head && it == tail)) // Head or head and tail
             {
-                #ifdef DEBUG
-                    DEBUG(n << " is head and tail ");
-                #endif   
+                DEBUG(n << " is head and tail ");
 
                 pop_front(); 
                 it = nullptr;
@@ -296,9 +286,7 @@ bool SList<T>::find_and_remove(const T& n)
             }
             else if(it == tail) // Tail
             {
-                #ifdef DEBUG
-                    DEBUG(n << " is tail ");
-                #endif   
+                DEBUG(n << " is tail ");
 
                 pop_back(); 
                 it = nullptr;
@@ -306,9 +294,7 @@ bool SList<T>::find_and_remove(const T& n)
             }
             else // Not head or tail
             {
-                #ifdef DEBUG
-                    DEBUG(n << " is neither head nor tail ");
-                #endif   
+                DEBUG(n << " is neither head nor tail ");
 
                 erase(it);
                 it = nullptr;
@@ -320,17 +306,13 @@ bool SList<T>::find_and_remove(const T& n)
 
     if (found == true) 
     {
-        #ifdef DEBUG
-            DEBUG(n << " found and deleted ");
-        #endif   
+        DEBUG(n << " found and deleted ");
 
         return true;
     }
     else
     {
-        #ifdef DEBUG
-            DEBUG(n << " not found ");
-        #endif   
+        DEBUG(n << " not found ");
 
         return false;
     }
@@ -339,63 +321,42 @@ bool SList<T>::find_and_remove(const T& n)
 template<class T>
 void SList<T>::insert(const T &n)
 {
-    #ifdef DEBUG
-        DEBUG("\nSList insert ");
-        DEBUG("n = " << n);
-    #endif   
+    DEBUG("\nSList insert ");
+    DEBUG("n = " << n);
 
-    Node * nNode = new Node; 
-
-    nNode->data = n;
 
     assert(head != nullptr);
 
     if (head == nullptr) // Case 1: list empty
     {
-        #ifdef DEBUG
-            DEBUG("Creating new list ");
-        #endif   
+        DEBUG("Creating new list ");
 
-        head = nNode;
-        tail = nNode;
-
-        listsize++;
+        push_front(n);
     }
     else // Case 2: list not empy
     {
-        #ifdef DEBUG
-            DEBUG("Adding to list ");
-        #endif   
+        DEBUG("Adding to list ");
 
         if (n < head->data) // Case 2A : n is new head
         {
-            #ifdef DEBUG
-                DEBUG("New head ");
-            #endif   
+            DEBUG("New head ");
 
-            nNode->next = head;
-
-            head = nNode;
-
-            listsize++;
+            push_front(n);
 
         }
         else // Case 2B : n is after head
         {
+            Node * nNode = new Node(n); 
             Node * it = head;
             Node * prev  = head;
 
             while (it->next != nullptr)
             {
-                #ifdef DEBUG
-                    DEBUG("it != nullptr ");
-                #endif   
+                DEBUG("it != nullptr ");
 
                 if (n < it->data)
                 {
-                    #ifdef DEBUG
-                        DEBUG("n < it ");
-                    #endif   
+                    DEBUG("n < it ");
 
                     nNode->next = it;
                     prev->next = nNode;
@@ -404,9 +365,7 @@ void SList<T>::insert(const T &n)
                 }
                 else
                 {
-                    #ifdef DEBUG
-                        DEBUG("it->next ");
-                    #endif   
+                    DEBUG("it->next ");
 
                     prev = it;
                     it = it->next;
@@ -415,14 +374,10 @@ void SList<T>::insert(const T &n)
 
             if (it->next == nullptr)
             {
-                #ifdef DEBUG
-                    DEBUG("End of list ");
-                #endif   
+                DEBUG("End of list ");
 
-                it->next = nNode; 
-                it->next->next = nullptr;
-                tail = nNode;
-                listsize++;
+                push_back(n);
+
             }
        }
     }
@@ -433,9 +388,7 @@ void SList<T>::insert(const T &n)
 template<class T>
 void SList<T>::pop_back()
 {
-    #ifdef DEBUG
-        DEBUG("\nSList pop_back ");
-    #endif   
+    DEBUG("\nSList pop_back ");
 
     for (Node * it = head; it != nullptr; it = it->next)
     {
@@ -443,9 +396,7 @@ void SList<T>::pop_back()
 
         if(it == head && it == tail) // Head and tail
         {
-            #ifdef DEBUG
-                DEBUG("popping head and tail ");
-            #endif   
+            DEBUG("popping head and tail ");
 
             temp = head;
             head = nullptr;
@@ -457,9 +408,7 @@ void SList<T>::pop_back()
         }
         else if(it == tail) // Tail
         {
-            #ifdef DEBUG
-                DEBUG("poppig tail ");
-            #endif   
+            DEBUG("poppig tail ");
 
             temp = tail;
 
@@ -483,9 +432,7 @@ void SList<T>::pop_back()
 template<class T>
 void SList<T>::pop_front()
 {
-    #ifdef DEBUG
-        DEBUG("\nSList pop_front ");
-    #endif   
+    DEBUG("\nSList pop_front ");
 
     for (Node * it = head; it != nullptr; it = it->next)
     {
@@ -493,9 +440,7 @@ void SList<T>::pop_front()
 
         if(it == head && it == tail) // Head and tail
         {
-            #ifdef DEBUG
-                DEBUG("popping head and tail ");
-            #endif   
+            DEBUG("popping head and tail ");
 
             temp = head;
             head = nullptr;
@@ -507,9 +452,7 @@ void SList<T>::pop_front()
         }
         else if(it == head) // Head
         {
-            #ifdef DEBUG
-                DEBUG("Popping head ");
-            #endif   
+            DEBUG("Popping head ");
 
             temp = head;
             head = head->next;
@@ -522,13 +465,12 @@ void SList<T>::pop_front()
 
     return;
 }
+
 template<class T>
 void SList<T>::push_back(const T &n)
 {
-    #ifdef DEBUG
-        DEBUG("\nSList push_back ");
-        DEBUG("n = " << n);
-    #endif   
+    DEBUG("\nSList push_back ");
+    DEBUG("n = " << n);
 
     Node * nNode = new Node; 
 
@@ -536,9 +478,7 @@ void SList<T>::push_back(const T &n)
 
     if (head == nullptr) // Case 1: list empty
     {
-        #ifdef DEBUG
-            DEBUG("Creating new list ");
-        #endif   
+        DEBUG("Creating new list ");
 
         head = nNode;
         tail = nNode;
@@ -547,15 +487,11 @@ void SList<T>::push_back(const T &n)
     }
     else // Case 2: list not empy
     {
-        #ifdef DEBUG
-            DEBUG("Adding to list ");
-        #endif   
+        DEBUG("Adding to list ");
 
         if (n < head->data) // Case 2A : n is new tail 
         {
-            #ifdef DEBUG
-                DEBUG("New tail ");
-            #endif   
+            DEBUG("New tail ");
 
             tail->next = nNode;
             tail = nNode;
@@ -571,10 +507,8 @@ void SList<T>::push_back(const T &n)
 template<class T>
 void SList<T>::push_front(const T &n)
 {
-    #ifdef DEBUG
-        DEBUG("\nSList push_front ");
-        DEBUG("n = " << n);
-    #endif   
+    DEBUG("\nSList push_front ");
+    DEBUG("n = " << n);
 
     Node * nNode = new Node; 
 
@@ -582,9 +516,7 @@ void SList<T>::push_front(const T &n)
 
     if (head == nullptr) // Case 1: list empty
     {
-        #ifdef DEBUG
-            DEBUG("Creating new list ");
-        #endif   
+        DEBUG("Creating new list ");
 
         head = nNode;
         tail = nNode;
@@ -593,10 +525,8 @@ void SList<T>::push_front(const T &n)
     }
     else // Case 2: list not empy
     {
-        #ifdef DEBUG
-            DEBUG("Adding to list ");
-            DEBUG("New head ");
-        #endif   
+        DEBUG("Adding to list ");
+        DEBUG("New head ");
 
         nNode->next = head;
 
@@ -612,9 +542,7 @@ void SList<T>::push_front(const T &n)
 template<class T>
 void SList<T>::print()
 {
-    #ifdef DEBUG
-        DEBUG("\nSList print ");
-    #endif   
+    DEBUG("\nSList print ");
     
 //    std::cout << this << std::endl;
 
@@ -632,10 +560,8 @@ void SList<T>::print()
 template<class T>
 bool SList<T>::search(const T &n)
 {
-    #ifdef DEBUG
-        DEBUG("\nSList search ");
-        DEBUG("n = " << n);
-    #endif   
+    DEBUG("\nSList search ");
+    DEBUG("n = " << n);
 
     bool found = false;
 
@@ -647,17 +573,13 @@ bool SList<T>::search(const T &n)
 
     if (found == true) 
     {
-        #ifdef DEBUG
-            DEBUG(n << " found ");
-        #endif   
+        DEBUG(n << " found ");
 
         return true;
     }
     else
     {
-        #ifdef DEBUG
-            DEBUG(n << " not found ");
-        #endif   
+        DEBUG(n << " not found ");
 
         return false;
     }
@@ -666,9 +588,7 @@ bool SList<T>::search(const T &n)
 template<class T>
 int SList<T>::size()
 {
-    #ifdef DEBUG
-        DEBUG("\nSList size ");
-    #endif   
+    DEBUG("\nSList size ");
 
     return listsize;
 }

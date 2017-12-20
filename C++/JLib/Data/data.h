@@ -39,6 +39,7 @@ private:
     T data{};
 public:
     Data(){};
+    Data(const T& n){ data = n; };
     ~Data(){};
     friend std::ostream& operator << (std::ostream& os, const Data<T>& param)
     {
