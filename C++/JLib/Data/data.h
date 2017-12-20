@@ -1,11 +1,33 @@
-/*  TODO:
+/*  Title:   Data.h
+ *  Creator: Jaime "jland13" Landers
+ *  Purpose: 
+ *  Sources: None
  *
- *  Configure for arbitrary number of template types
-*/
- 
+ *  TODO:
+ *
+ */
+
+//Preprocessor:
 #ifndef _DATA_H_
 #define _DATA_H_
 
+//Assertions:
+#define NDEBUG
+#ifdef NDEBUG
+#define assert(condition) ((void)0)
+#else
+#define assert(condition)
+#endif
+
+//Debug macro:
+//#define _DEBUG
+#ifdef  _DEBUG
+#define DEBUG(x) do { std::cerr << x <<std::endl; } while (0)
+#else
+#define DEBUG(X)
+#endif
+
+//Includes:
 #include <iostream>
 
 template <class... Ts> class Data{};
@@ -20,11 +42,9 @@ public:
     ~Data(){};
     friend std::ostream& operator << (std::ostream& os, const Data<T>& param)
     {
-        bool debug = false;
-//        bool debug = true;
-
-        if (debug)
-            std::cout << "Data << overload  " << std::endl;
+        #ifdef DEBUG
+            DEBUG("\nData << overload  ");
+        #endif
 
         os << param.data;
 
@@ -32,11 +52,9 @@ public:
     }
     friend bool operator == (const Data<T>& d1, const Data<T>& d2)
     {
-        bool debug = false;
-//        bool debug = true;
-
-        if (debug)
-            std::cout << "Data == overload  " << std::endl;
+        #ifdef DEBUG
+            DEBUG("\nData == overload  ");
+        #endif
 
         if (d1.data == d2.data)
             return true;
@@ -45,11 +63,9 @@ public:
     }
     friend bool operator < (const Data<T>& d1, const Data<T>& d2)
     {
-        bool debug = false;
-//        bool debug = true;
-
-        if (debug)
-            std::cout << "Data < overload  " << std::endl;
+        #ifdef DEBUG
+            DEBUG("\nData < overload ");
+        #endif
 
         if (d1.data < d2.data)
             return true;
@@ -58,11 +74,9 @@ public:
     }
     friend bool operator > (const Data<T>& d1, const Data<T>& d2)
     {
-        bool debug = false;
-//        bool debug = true;
-
-        if (debug)
-            std::cout << "Data > overload  " << std::endl;
+        #ifdef DEBUG
+            DEBUG("\nData > overload ");
+        #endif
 
         if (d1.data > d2.data)
             return true;
@@ -71,57 +85,46 @@ public:
     }
     T getData() // base case
     {
-
-//        bool debug = false;
-        bool debug = true;
-
-        if (debug)
-            std::cout << "Data getData base " << std::endl;
+        #ifdef DEBUG
+            DEBUG("\nData getData base ");
+        #endif
  
 //        return getData(ns...);
         return data;
     }
 /*    T getData(Ts... ns)
     {
-        bool debug = false;
-//        bool debug = true;
-
-        if (debug)
-            std::cout << "Data getData base " << std::endl;
+        #ifdef DEBUG
+            DEBUG("\nData getData base ");
+        #endif
  
         return getData(ns...);
     }
 */    void setData(T n) // Base case
     {
-        bool debug = false;
-//        bool debug = true;
-
-        if (debug)
-        {
-            std::cout << "Data setData base case " << std::endl;
-            std::cout << "n = " << n << std::endl;
-        }
+        #ifdef DEBUG
+            DEBUG("\nData setData base case ");
+            DEBUG("n = " << n);
+        #endif
 
         data = n;
 
-        if (debug)
-            std::cout << "data = " << data << std::endl;
+        #ifdef DEBUG
+            DEBUG("data = " << data);
+        #endif
     }
 /*    void setData(T n, Ts... ns)
     { 
-        bool debug = false;
-//        bool debug = true;
-
-        if (debug)
-        {
-            std::cout << "Data setData " << std::endl;
-            std::cout << "m = " << n << std::endl;
-        }
+        #ifdef DEBUG
+            DEBUG("\nData setData ");
+            DEBUG("m = " << n);
+        #endif
 
         setData(ns...);
 
-        if (debug)
-            std::cout << "data = " << data << std::endl;
+        #ifdef DEBUG
+            DEBUG("\ndata = " << data);
+        #endif
     }
 */};
 

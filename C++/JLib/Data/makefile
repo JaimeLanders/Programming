@@ -1,2 +1,2 @@
-main: main.cpp data.h
-	g++ -o main main.cpp data.h
+main.o: main.cpp data.h
+	g++ -o main.o main.cpp data.h
