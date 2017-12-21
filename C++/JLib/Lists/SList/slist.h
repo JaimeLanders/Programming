@@ -13,9 +13,13 @@
  *      Insert X
  *  Implement const correctness X
  *  Swtich from debug statments to debug macros X 
+ *  Fix pop_back valgrind errors X
+ *  Fix erase seg fault
  *  Implement iterator 
- *      Return iterator from insert
  *      Allow erase from iterator X
+ *      Build post increment X 
+ *      Import template iterator
+ *      Return iterator from insert
  *  Fix insert sort
  *  Add push_back(T&&)
  *  Add emplace_back(Args&&...)
@@ -27,15 +31,15 @@
 #define _SLIST_
 
 //Assertions:
-#define NDEBUG
-#ifdef NDEBUG
-#define assert(condition) ((void)0)
-#else
+//#define NDEBUG
+//#ifdef NDEBUG
+//#define assert(condition) ((void)0)
+//#else
 #define assert(condition)
-#endif
+//#endif
 
 //Debug macro:
-//#define SLIST_DEBUG
+#define SLIST_DEBUG
 #ifdef  SLIST_DEBUG
 #define DEBUG(x) do { std::cerr << x <<std::endl; } while (0)
 #else
@@ -77,14 +81,14 @@ public:
     friend class SList;
     private:
         Node * itPtr;
-        Iterator(Node *newPtr) : itPtr(newPtr){}
+        Iterator(Node * newPtr) : itPtr(newPtr){}
     public:
         Iterator() : itPtr(nullptr){}
-        const T& operator * () const { return itPtr->data; }   // & Overload
-        const T& operator -> () const { return itPtr->data; }  // -> Overload
-        bool operator == (std::nullptr_t)
+        const T& operator * () const { return itPtr->data; }    // & Overload
+        const T& operator -> () const { return itPtr->data; }   // -> Overload
+        bool operator == (const Iterator & it)                  // == Overload
         {
-            if (itPtr == nullptr)
+           if (itPtr == it.itPtr)
             {
                 return true;
             }
@@ -93,29 +97,7 @@ public:
                 return false;
             }
         }
-        bool operator == (const Iterator & it)
-        {
-            if (itPtr == it.itPtr)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        bool operator != (std::nullptr_t)
-        {
-            if (itPtr != nullptr)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        bool operator != (const Iterator & it)
+        bool operator != (const Iterator & it)                  // != Overload
         {
             if (itPtr != it.itPtr)
             {
@@ -126,19 +108,24 @@ public:
                 return false;
             }
         }
-        Iterator& operator ++ ()
+        Iterator& operator ++ ()                                // Pre-increment
+        {
+            itPtr = itPtr->next;
+            return *this;
+        }
+        Iterator& operator ++ (int n)                           // Post-increment
         {
             itPtr = itPtr->next;
             return *this;
         }
     };
-    Iterator begin() const
+    Iterator begin() const noexcept
     {
         return Iterator(head);
     }
-    Iterator end() const
+    Iterator end() const noexcept
     {
-        return Iterator(tail);
+        return Iterator(tail->next);
     }
     Iterator next(Iterator it)
     {
@@ -166,7 +153,13 @@ public:
 
         while (it != nullptr)
         {
-            os << it->data << std::endl;
+            os << it->data;// << std::endl;
+
+            if (it->next != nullptr)
+            {
+               os << std::endl;
+            }
+
             it = it->next;
         }
 
@@ -236,7 +229,6 @@ SList<T>::SList(SList<T>&& rhs)
     rhs.head = nullptr;
     rhs.tail = nullptr;
     rhs.listsize = 0;
-
 }
 
 template<class T>
@@ -292,6 +284,7 @@ template<class T>
 void SList<T>::deleteNode(const Node * nodeIn)
 {
     DEBUG("\nSList deleteNode ");
+    DEBUG("nodeIn data = " << nodeIn->data);
 
     delete nodeIn;
 }
@@ -313,17 +306,31 @@ void SList<T>::erase(Iterator itIn)
 {
     DEBUG("\nSList erase ");
 
-    Iterator temp = itIn;
-    Iterator prev;
-    for (Iterator it = begin(); next(it) == itIn; ++it)
+    assert(itIn != nullptr);
+    Node * temp = itIn.itPtr;
+    assert(temp != nullptr);
+//    Iterator temp = itIn;
+    Node * prev = nullptr; // Not implicitly initialized to nullptr
+//    Iterator prev;
+    assert(prev == nullptr);
+
+//    for (Node * it = head; it->next->data == *itIn; it = it->next)
+    for (Iterator it = begin(); next(it) == itIn; it++)
     {
-        prev = it;
+        DEBUG("it++ ");
+        prev = it.itPtr;
+//        prev = it;
     }
+//bp
+    prev->next = temp->next; // Seg fault
+//    next(prev) = next(itIn);
+//    itIn = next(prev);
 
-    next(prev) = next(itIn);
-    itIn = next(prev);
+    DEBUG("break ");
 
-    deleteNode(temp.itPtr);
+    deleteNode(temp);
+//    deleteNode(temp.itPtr);
+
     listsize--;
 }
 
@@ -334,17 +341,23 @@ bool SList<T>::find_and_remove(const T& n)
     DEBUG("n = " << n);
 
     bool found = false;
-    for (Iterator it = begin(); it != end(); ++it)
+
+
+    for (Iterator it = begin(); it != end(); it++)
     {
+        assert(it != nullptr);
+        DEBUG("it != tail ");
+//        DEBUG("it = " << *it);
+
         if (*it == n)  
         {
-
             if(it == head || (it == head && it == tail)) // Head or head and tail
             {
-                DEBUG(n << " is head and tail ");
+                DEBUG(n << " is head or head and tail ");
 
                 pop_front(); 
                 it = nullptr;
+                found = true;
                 break;
             }
             else if(it == tail) // Tail
@@ -353,6 +366,7 @@ bool SList<T>::find_and_remove(const T& n)
 
                 pop_back(); 
                 it = nullptr;
+                found = true;
                 break;
             }
             else // Not head or tail
@@ -361,9 +375,9 @@ bool SList<T>::find_and_remove(const T& n)
 
                 erase(it);
                 it = nullptr;
+                found = true;
                 break;
            }
-           found = true;
        }
     }
 
@@ -387,11 +401,11 @@ void SList<T>::insert(const T & n)
     DEBUG("\nSList insert ");
     DEBUG("n = " << n);
 
-    assert(head != nullptr);
-
     if (head == nullptr) // Case 1: list empty
     {
         DEBUG("Creating new list ");
+
+//        assert(head != NULL);
 
         push_front(n);
     }
@@ -473,16 +487,28 @@ void SList<T>::pop_back()
             DEBUG("poppig tail ");
 
             temp = tail;
+            assert(temp == tail);
+            assert(head != nullptr);
+            Node * prev;
 
-            for (Node * it2 = head; it2->next == tail; it2 = it2->next)
+            for (Node * it2 = head; it2->next != nullptr; it2 = it2->next)
+//            for (Node * it2 = head; it2->next == tail; it2 = it2->next)
             {
-                tail = it2;
+                DEBUG("it2->next != tail ");
+                prev = it2;
+//                tail = it2;
             }
 
-            it = tail;
-            it->next = nullptr;
+            DEBUG("break ");
+
+            prev->next = nullptr;
+            tail = prev;
+            assert(tail != nullptr);
+
+//            it = tail;
+//            it->next = nullptr;
             deleteNode(temp);
-            temp = nullptr;
+//            temp = nullptr;
             listsize--;
             break;
         }

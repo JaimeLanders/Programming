@@ -14,18 +14,20 @@ int main ()
     char mString [] = "one";
     char nString [] = "testing";
     char oString [] = "zzz";
-    int nums [10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    int loopCt = 1000; 
     Data<int> mData;
     Data<int> nData;
     Data<int> oData;
 
     std::cout << "Welcome to SList Driver " << std::endl;
     
-
-  // nList Operations
-/*    for (int i = 0; i < 10; i++)
+    //===================//
+    // nList Operations: //
+    //===================//
+/*    
+    for (int i = 0; i < loopCt; i++) // Stress testing
     {
-        nList.insert(nums[i]);
+        nList.insert(i);
     }
 */
     nList.insert(100);
@@ -37,10 +39,31 @@ int main ()
     std::cout << "nList size = " << nList.size() << std::endl;;
 
 //    nList.print();
+    std::cout << nList << std::endl; // << Overload testing
 
-    std::cout << nList << std::endl;
+//    nList.find_and_remove(53);
+//    nList.find_and_remove(69);
+    nList.find_and_remove(77); // Seg fault
+//    nList.find_and_remove(100); // Seg fault
+//    nList.find_and_remove(101);
 
-    //dList operations 
+//    assert(nList.begin() != nullptr); // itPtr private
+//    nList.erase(nList.begin());
+//    assert(nList.end() != nullptr);
+//    nList.erase(nList.end());
+
+//    nList.pop_back();
+//    nList.pop_front();
+
+//    nList.clear();
+
+    std::cout << "nList size = " << nList.size() << std::endl;;
+
+    std::cout << nList << std::endl; // << Overload testing
+
+    //===================//
+    // dList operations: //
+    //===================//
 /*
 //    nData.setData(nString, 123);
 //    nData.setData(nString);
@@ -58,11 +81,13 @@ int main ()
 
 //    dList.find_and_remove(nData);
 
-    if (dList.search(nData) == true)
+*//*    if (dList.search(nData) == true)
 //        std::cout << nData << " found" << std::endl;
     else
         std::cout << nData << " not found" << std::endl;
-
+*//*
+    // Construtor/Assignment Testing
+    
     SList<Data<int>> dList2(dList); // Copy constructor
 //   SList<Data<int>> dList2 = dList; // Copy constructor
 
@@ -77,6 +102,8 @@ int main ()
 //    SList<Data<int>> dList2;
 //    dList2 = std::move(dList); // Move assignment overload
 
+    // Insert sort testing
+    
     mData.setData(321);
     dList.insert(mData);
 
@@ -90,6 +117,8 @@ int main ()
 //    std::cout << "dList2 size = " << dList2.size() << std::endl;;
 //   dList2.print();
 
+    // Removal testing:
+    
 //    dList.pop_back();
 //    dList.pop_front();
 */
