@@ -10,17 +10,38 @@
 int main ()
 {
     SList<Data<int>> dList;
+    SList<int> nList;
     char mString [] = "one";
     char nString [] = "testing";
     char oString [] = "zzz";
+    int nums [10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     Data<int> mData;
     Data<int> nData;
     Data<int> oData;
 
     std::cout << "Welcome to SList Driver " << std::endl;
+    
+
+  // nList Operations
+/*    for (int i = 0; i < 10; i++)
+    {
+        nList.insert(nums[i]);
+    }
+*/
+    nList.insert(100);
+    nList.insert(69);
+    nList.insert(101);
+    nList.insert(77);
+    nList.insert(53);
+
+    std::cout << "nList size = " << nList.size() << std::endl;;
+
+//    nList.print();
+
+    std::cout << nList << std::endl;
 
     //dList operations 
-
+/*
 //    nData.setData(nString, 123);
 //    nData.setData(nString);
     nData.setData(123);
@@ -37,11 +58,11 @@ int main ()
 
 //    dList.find_and_remove(nData);
 
-/*    if (dList.search(nData) == true)
+    if (dList.search(nData) == true)
 //        std::cout << nData << " found" << std::endl;
     else
         std::cout << nData << " not found" << std::endl;
-*/
+
     SList<Data<int>> dList2(dList); // Copy constructor
 //   SList<Data<int>> dList2 = dList; // Copy constructor
 
@@ -71,6 +92,6 @@ int main ()
 
 //    dList.pop_back();
 //    dList.pop_front();
-
+*/
     return 0;
 }

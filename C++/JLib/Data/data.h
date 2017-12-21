@@ -20,7 +20,7 @@
 //#endif
 
 //Debug macro:
-#define DATA_DEBUG
+//#define DATA_DEBUG
 #ifdef  DATA_DEBUG
 #define DEBUG(x) do { std::cerr << x <<std::endl; } while (0)
 #else

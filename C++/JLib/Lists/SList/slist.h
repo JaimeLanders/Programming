@@ -35,7 +35,7 @@
 #endif
 
 //Debug macro:
-#define SLIST_DEBUG
+//#define SLIST_DEBUG
 #ifdef  SLIST_DEBUG
 #define DEBUG(x) do { std::cerr << x <<std::endl; } while (0)
 #else
@@ -62,6 +62,7 @@ private:
     Node * head;
     Node * tail;
     size_t listsize;
+    void deleteNode(const Node*);                           // Delete node 
 public:
     SList() : head(nullptr), tail(nullptr), listsize(0){}   // Default constructor
     SList(const T&);                                        // Custom constructor
@@ -82,10 +83,8 @@ public:
         const T& operator * () const { return itPtr->data; }   // & Overload
         const T& operator -> () const { return itPtr->data; }  // -> Overload
         bool operator == (std::nullptr_t)
-//        friend bool operator == (const Iterator& it, std::nullptr_t)
         {
             if (itPtr == nullptr)
-//            if (it.ptr == nullptr)
             {
                 return true;
             }
@@ -95,7 +94,6 @@ public:
             }
         }
         bool operator == (const Iterator & it)
-//        friend bool operator == (const Iterator& it1, const Iterator& it2)
         {
             if (itPtr == it.itPtr)
             {
@@ -107,10 +105,8 @@ public:
             }
         }
         bool operator != (std::nullptr_t)
-//        friend bool operator != (const Iterator& it, std::nullptr_t)
         {
             if (itPtr != nullptr)
-//            if (it.ptr != nullptr)
             {
                 return true;
             }
@@ -120,7 +116,6 @@ public:
             }
         }
         bool operator != (const Iterator & it)
-//        friend bool operator != (const Iterator& it1, const Iterator& it2)
         {
             if (itPtr != it.itPtr)
             {
@@ -132,7 +127,6 @@ public:
             }
         }
         Iterator& operator ++ ()
-//        friend Iterator operator ++ (const Iterator& it)
         {
             itPtr = itPtr->next;
             return *this;
@@ -147,18 +141,13 @@ public:
         return Iterator(tail);
     }
     Iterator next(Iterator it)
-//    Iterator next(const Iterator & it) const
     {
-        ++it;//.itPtr = it.itPtr->next;
+        ++it;
         return it;
-//        return Iterator(it);
     }
     void clear();                                           // Clear list 
-//    void deleteNode(const Iterator*);                           // Delete node 
-    void deleteNode(const Node*);                           // Delete node 
     bool empty() const;                                     // Test if list empty
-    void erase(Iterator);                                      // Erase from list  
-//    void erase(Node*);                                      // Erase from list  
+    void erase(Iterator);                                   // Erase from list  
     bool find_and_remove(const T&);                         // Find and remove from list 
     void insert(const T&);                                  // In order insert
     void print() const;                                     // Print list
@@ -180,8 +169,6 @@ public:
             os << it->data << std::endl;
             it = it->next;
         }
-
-        os << rhs->data << std::endl;
 
         return os;
 
@@ -287,14 +274,11 @@ void SList<T>::clear()
 {
     DEBUG("\nSList clear ");
 
-//    Iterator it = begin();
     Node *it = head;
-//    Iterator temp = begin();
     Node *temp = head;
 
     while (it != nullptr)
     {
-//        temp = next(it);
         temp = it->next;
         it->next = nullptr;
         deleteNode(it);
@@ -305,12 +289,10 @@ void SList<T>::clear()
 }
 
 template<class T>
-//void SList<T>::deleteNode(const Iterator * itIn)
 void SList<T>::deleteNode(const Node * nodeIn)
 {
     DEBUG("\nSList deleteNode ");
 
-//    delete itIn;
     delete nodeIn;
 }
 
@@ -328,25 +310,19 @@ bool SList<T>::empty() const
 
 template<class T>
 void SList<T>::erase(Iterator itIn)
-//void SList<T>::erase(Node * nodeIn)
 {
     DEBUG("\nSList erase ");
 
     Iterator temp = itIn;
     Iterator prev;
     for (Iterator it = begin(); next(it) == itIn; ++it)
-//    for (Node * it = head; it->next == itIn; it = it->next)
     {
         prev = it;
     }
 
     next(prev) = next(itIn);
-//    prev->next = itIn->next;
     itIn = next(prev);
-//    itIn = prev->next;
-//    Node * tempNode = temp;
 
-//    deleteNode(tempNode);
     deleteNode(temp.itPtr);
     listsize--;
 }
@@ -359,13 +335,9 @@ bool SList<T>::find_and_remove(const T& n)
 
     bool found = false;
     for (Iterator it = begin(); it != end(); ++it)
-//    for (Node * it = head; it != nullptr; it = it->next)
     {
         if (*it == n)  
-//        if (it->data == n)  
         {
-
-//            Node * temp;
 
             if(it == head || (it == head && it == tail)) // Head or head and tail
             {
