@@ -16,16 +16,11 @@
 #ifndef _ITERATOR_H_
 #define _ITERATOR_H_
 
-//Assertions:
+//Disable assertions:
 //#define NDEBUG
-//#ifdef NDEBUG
-//#define assert(condition) ((void)0)
-//#else
-//#define assert(condition)
-//#endif
 
 //Debug macro:
-#define ITERATOR_DEBUG
+//#define ITERATOR_DEBUG
 #ifdef  ITERATOR_DEBUG
 #define DEBUG(x) do { std::cerr << x <<std::endl; } while (0)
 #else
@@ -33,6 +28,7 @@
 #endif
 
 //Includes:
+#include <cassert>
 #include <iostream>
 
 template <class T>

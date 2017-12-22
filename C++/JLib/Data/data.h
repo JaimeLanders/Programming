@@ -4,7 +4,7 @@
  *  Sources: None
  *
  *  TODO:
- *
+ * Fix > overload, not sorting in SList
  */
 
 //Preprocessor:
@@ -13,11 +13,6 @@
 
 //Assertions:
 //#define NDEBUG
-//#ifdef NDEBUG
-//#define assert(condition) ((void)0)
-//#else
-//#define assert(condition)
-//#endif
 
 //Debug macro:
 //#define DATA_DEBUG
@@ -28,6 +23,7 @@
 #endif
 
 //Includes:
+#include <cassert>
 #include <iostream>
 
 template <class... Ts> class Data{};

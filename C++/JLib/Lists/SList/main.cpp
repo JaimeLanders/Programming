@@ -14,7 +14,7 @@ int main ()
     char mString [] = "one";
     char nString [] = "testing";
     char oString [] = "zzz";
-    int loopCt = 1000; 
+    int loopCt = 10000; 
     Data<int> mData;
     Data<int> nData;
     Data<int> oData;
@@ -43,14 +43,14 @@ int main ()
 
 //    nList.find_and_remove(53);
 //    nList.find_and_remove(69);
-    nList.find_and_remove(77); // Seg fault
-//    nList.find_and_remove(100); // Seg fault
+//    nList.find_and_remove(77);
+//    nList.find_and_remove(100);
 //    nList.find_and_remove(101);
 
-//    assert(nList.begin() != nullptr); // itPtr private
+//    assert(nList.begin()); // itPtr private
 //    nList.erase(nList.begin());
-//    assert(nList.end() != nullptr);
-//    nList.erase(nList.end());
+//    assert(nList.end() != nullptr); // itPtr private
+    nList.erase(nList.end());
 
 //    nList.pop_back();
 //    nList.pop_front();
