@@ -4,7 +4,7 @@
  *  Sources: None
  *
  *  TODO:
- *  Implement basic iterator operations:
+ *  Implement basic Forward_Iterator operations:
  *      advance
  *      begin
  *      end
@@ -13,39 +13,93 @@
  */
 
 //Preprocessor:
-#ifndef _ITERATOR_H_
-#define _ITERATOR_H_
+#ifndef _Forward_Iterator_H_
+#define _Forward_Iterator_H_
 
 //Disable assertions:
 //#define NDEBUG
 
 //Debug macro:
-//#define ITERATOR_DEBUG
-#ifdef  ITERATOR_DEBUG
+//#define Forward_Iterator_DEBUG
+//#ifdef  Forward_Iterator_DEBUG
 #define DEBUG(x) do { std::cerr << x <<std::endl; } while (0)
-#else
-#define DEBUG(X)
-#endif
+//#else
+//#define DEBUG(X)
+//#endif
 
 //Includes:
-#include <cassert>
+#include <assert.h>
 #include <iostream>
 
 template <class T>
-class Iterator
+class Forward_Iterator
+{
+private:
+public:
+//    T itPtr;
+    T * itPtr;
+//    Forward_Iterator(T newPtr) : itPtr(newPtr){}
+    Forward_Iterator<T>(T * newPtr) : itPtr(newPtr){}
+//    Forward_Iterator() : itPtr(){}
+//    Forward_Iterator() : itPtr(nullptr){}
+//    T& operator * () { return *itPtr; }                // & Overload
+//    T& operator * () { return *itPtr; }                // & Overload
+//    T& operator * () { return itPtr->data; }                // & Overload
+//    T* operator -> () { return itPtr; }               // -> Overload
+//    T& operator -> () { return itPtr; }               // -> Overload
+//    T& operator -> () { return itPtr->data; }               // -> Overload
+//    const T& operator * () const { return itPtr->data; }    // Const & Overload
+//    const T& operator -> () const { return itPtr->data; }   // Const -> Overload
+
+    bool operator == (const Forward_Iterator & rhs)                 // Const == Overload
+    {
+//        DEBUG("\nForward_Iterator == overload");
+//        assert(it != nullptr);
+//        assert(rhs.itPtr != nullptr);
+        return (itPtr == rhs.itPtr); // Returns nullptr, seg faults erase
+    }
+    bool operator != (const Forward_Iterator & rhs)
+    {
+//        DEBUG("\nForward_Iterator != overload");
+        return itPtr != rhs.itPtr ;
+//        return !(*this == it);
+    }       // != Overload
+//    friend bool operator == (const Forward_Iterator &lhs, const Forward_Iterator &rhs) { return lhs == rhs; }    // Const == Overload
+//    friend bool operator != (const Forward_Iterator &lhs, const Forward_Iterator &rhs) { return !(lhs == rhs); }    // Const == Overload
+    Forward_Iterator operator ++ ()                                // Pre-increment
+//    Forward_Iterator& operator ++ ()                                // Pre-increment
+    {
+//        DEBUG("\nForward_Iterator ++pre ");
+//        assert(itPtr != nullptr);
+//        Forward_Iterator i = *this;
+//        itPtr++;
+//        return i;
+        itPtr = itPtr->next;
+        return *this;
+    }
+    Forward_Iterator operator ++ (int)                             // Post-increment
+    {
+//        DEBUG("\nForward_Iterator post++ ");
+        Forward_Iterator temp = *this;
+        ++(*this);
+        return temp;
+    }
+
+};
+/*    };class Forward_Iterator
     {
     private:
         T itPtr;
     public:
-        Iterator() : itPtr(nullptr){}                           // Default constructor
-        Iterator(T * newPtr) : itPtr(newPtr){}                  // Constructor (should be private)
+        Forward_Iterator() : itPtr(nullptr){}                           // Default constructor
+        Forward_Iterator(T * newPtr) : itPtr(newPtr){}                  // Constructor (should be private)
         T& operator * () const { return *itPtr; }          // & Overload
 //        const T& operator * () const { return itPtr; }          // & Overload
         T* operator -> () const { return itPtr; }         // -> Overload
 //        const T* operator -> () const { return itPtr; }         // -> Overload
-        bool operator == (const Iterator & rhs)                  // == Overload
+        bool operator == (const Forward_Iterator & rhs)                  // == Overload
         {
-            DEBUG("Iterator == overload ");
+            DEBUG("Forward_Iterator == overload ");
 
             if (itPtr == rhs.itPtr)
             {
@@ -56,10 +110,10 @@ class Iterator
                 return false;
             }
         }
-//        bool operator != (Iterator & it)                  // != Overload
-        bool operator != (const Iterator & rhs)                  // != Overload
+//        bool operator != (Forward_Iterator & it)                  // != Overload
+        bool operator != (const Forward_Iterator & rhs)                  // != Overload
         {
-            DEBUG("Iterator != overload ");
+            DEBUG("Forward_Iterator != overload ");
 
             if (itPtr != rhs.itPtr)
             {
@@ -70,33 +124,34 @@ class Iterator
                 return false;
             }
         }
-        Iterator& operator ++ ()                                // Pre-increment
+        Forward_Iterator& operator ++ ()                                // Pre-increment
         {
-            DEBUG("Iterator ++pre ");
+            DEBUG("Forward_Iterator ++pre ");
 
             itPtr = itPtr->next;
             return *this;
         }
-        Iterator& operator ++ (int n)                           // Post-increment
+        Forward_Iterator& operator ++ (int n)                           // Post-increment
         {
-            DEBUG("Iterator post++ ");
+            DEBUG("Forward_Iterator post++ ");
 
             itPtr = itPtr->next;
             return *this;
         }
     };
-/*    Iterator begin() const noexcept
+    Forward_Iterator begin() const noexcept
     {
-        return Iterator(head);
+        return Forward_Iterator(head);
     }
-    Iterator end() const noexcept
+    Forward_Iterator end() const noexcept
     {
-        return Iterator(tail->next);
+        return Forward_Iterator(tail->next);
     }
-    Iterator next(Iterator it)
+    Forward_Iterator next(Forward_Iterator it)
     {
         ++it;
         return it;
     }
 */
+
 #endif

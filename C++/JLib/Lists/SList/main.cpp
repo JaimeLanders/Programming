@@ -18,6 +18,7 @@ int main ()
     Data<int> mData;
     Data<int> nData;
     Data<int> oData;
+//    SList<int>::Iterator it;
 
     std::cout << "Welcome to SList Driver " << std::endl;
     
@@ -41,16 +42,17 @@ int main ()
 //    nList.print();
     std::cout << nList << std::endl; // << Overload testing
 
-//    nList.find_and_remove(53);
-//    nList.find_and_remove(69);
-//    nList.find_and_remove(77);
-//    nList.find_and_remove(100);
-//    nList.find_and_remove(101);
+//    nList.remove(53); // Seg faults remove 
+//    nList.insert(69); // Test for duplicate removal
+//    nList.remove(69);
+//    nList.remove(77);
+//    nList.remove(100);
+//    nList.remove(101);
 
 //    assert(nList.begin()); // itPtr private
 //    nList.erase(nList.begin());
 //    assert(nList.end() != nullptr); // itPtr private
-    nList.erase(nList.end());
+//    nList.erase(nList.end());
 
 //    nList.pop_back();
 //    nList.pop_front();
@@ -79,7 +81,7 @@ int main ()
 //    dList.print();
 //    std::cout << dList << std::end;
 
-//    dList.find_and_remove(nData);
+//    dList.remove(nData);
 
 *//*    if (dList.search(nData) == true)
 //        std::cout << nData << " found" << std::endl;

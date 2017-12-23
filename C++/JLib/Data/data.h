@@ -16,14 +16,14 @@
 
 //Debug macro:
 //#define DATA_DEBUG
-#ifdef  DATA_DEBUG
-#define DEBUG(x) do { std::cerr << x <<std::endl; } while (0)
-#else
-#define DEBUG(X)
-#endif
+//#ifdef  DATA_DEBUG
+//#define DEBUG(x) do { std::cerr << x <<std::endl; } while (0)
+//#else
+//#define DEBUG(X)
+//#endif
 
 //Includes:
-#include <cassert>
+#include <assert.h>
 #include <iostream>
 
 template <class... Ts> class Data{};
