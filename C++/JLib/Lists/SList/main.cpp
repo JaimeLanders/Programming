@@ -2,17 +2,17 @@
  *
 */
 
+#include <cassert>
 #include <iostream>
 #include "slist.h" 
 #include "utility" 
-#include <forward_list>  
 #include "../../Data/data.h" 
 
 int main ()
 {
     SList<Data<int>> dList;
     SList<int> nList;
-    const SList<int> cList;
+    bool breakpt = true;
     char mString [] = "one";
     char nString [] = "testing";
     char oString [] = "zzz";
@@ -29,23 +29,17 @@ int main ()
     // nList Operations: //
     //===================//
 /*    
-    for (int i = 0; i < loopCt; i++) // Stress testing
+    for (int i = 0; i < loopCt; i++) // Stress testing, disable debug
     {
         nList.insert(i);
     }
 */
-    // Const testing:
-    const int cInt = 100;
-    nList.insert(cInt);
-    it = nList.search(cInt);
-//    cIt = nList.search(cInt); No = conversion
-
 /*    nList.insert(100);
     nList.insert(69);
     nList.insert(101);
     nList.insert(77);
     nList.insert(53);
-*/
+
     std::cout << "nList size = " << nList.size() << std::endl;;
 
 //    nList.print();
@@ -59,10 +53,12 @@ int main ()
 //    it = nList.search(100);
 //    it = nList.search(101);
 //    std::cout << "cIt = " << *cIt << std::endl;
-    std::cout << "it = " << *it << std::endl;
+//    std::cout << "it = " << *it << std::endl;
 
 //    nList.erase(it);
-    nList.remove(*it);
+//    nList.remove(*it); // not removing last element
+
+//    assert(breakpt == false);
 
 //    nList.remove(53);
 //    nList.insert(69); // Test for duplicate removal
@@ -71,10 +67,8 @@ int main ()
 //    nList.remove(100);
 //    nList.remove(101);
 
-//    assert(nList.begin()); // itPtr private
 //    nList.erase(nList.begin());
-//    assert(nList.end() != nullptr); // itPtr private
-//    nList.erase(nList.end());
+//    nList.erase(nList.end()); // Seg fault, end returns nullptr
 
 //    nList.pop_back();
 //    nList.pop_front();
@@ -84,11 +78,50 @@ int main ()
     std::cout << "nList size = " << nList.size() << std::endl;;
 
     std::cout << nList << std::endl; // << Overload testing
+*/
+/*    // Const testing:
+    
+    const int cInt = 100;
 
+    nList.insert(cInt);
+//    cIt = nList.search(cInt);
+//    std::cout << "cIt = " << *cIt << std::endl;
+//    cIt = nList.search(cInt); No = conversion
+
+//    cIt = nList.cBegin();
+//    cIt = nList.cEnd();
+//    cIt = nList.cSearch(cInt);
+    std::cout << "cIt = " << *cIt << std::endl;
+
+
+//    std::cout << "nList size = " << nList.size() << std::endl;;
+//    std::cout << nList << std::endl; // << Overload testing
+
+//    nList.erase(cIt);
+    nList.remove(*cIt);
+*/
+    // Const list testing:
+
+/*    const SList<int> cList(cInt);
+//    cIt = cList.cBegin();
+//    cIt = cList.cEnd();
+    cIt = cList.cSearch(cInt);
+    std::cout << "cIt = " << *cIt << std::endl;
+
+    std::cout << "cList size = " << cList.size() << std::endl;;
+    std::cout << cList << std::endl; // << Overload testing
+
+    cIt = cList.cSearch(100);
+    std::cout << "cIt = " << *cIt << std::endl;
+
+//    cList.insert(101); // passing ‘const SList<int>’ as ‘this’ argument discards qualifiers
+//    cList.erase(cIt); // passing ‘const SList<int>’ as ‘this’ argument discards qualifiers
+//    cList.remove(*cIt); // passing ‘const SList<int>’ as ‘this’ argument discards qualifiers
+*/
     //===================//
     // dList operations: //
     //===================//
-/*
+
 //    nData.setData(nString, 123);
 //    nData.setData(nString);
     nData.setData(123);
@@ -105,11 +138,11 @@ int main ()
 
 //    dList.remove(nData);
 
-*//*    if (dList.search(nData) == true)
+/*    if (dList.search(nData) == true)
 //        std::cout << nData << " found" << std::endl;
     else
         std::cout << nData << " not found" << std::endl;
-*//*
+*/
     // Construtor/Assignment Testing
     
     SList<Data<int>> dList2(dList); // Copy constructor
@@ -145,6 +178,6 @@ int main ()
     
 //    dList.pop_back();
 //    dList.pop_front();
-*/
+
     return 0;
 }
