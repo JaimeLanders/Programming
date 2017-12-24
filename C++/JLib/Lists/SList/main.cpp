@@ -5,12 +5,14 @@
 #include <iostream>
 #include "slist.h" 
 #include "utility" 
+#include <forward_list>  
 #include "../../Data/data.h" 
 
 int main ()
 {
     SList<Data<int>> dList;
     SList<int> nList;
+    const SList<int> cList;
     char mString [] = "one";
     char nString [] = "testing";
     char oString [] = "zzz";
@@ -18,7 +20,8 @@ int main ()
     Data<int> mData;
     Data<int> nData;
     Data<int> oData;
-//    SList<int>::Iterator it;
+    SList<int>::Iterator it;
+    SList<int>::Const_Iterator cIt;
 
     std::cout << "Welcome to SList Driver " << std::endl;
     
@@ -31,18 +34,37 @@ int main ()
         nList.insert(i);
     }
 */
-    nList.insert(100);
+    // Const testing:
+    const int cInt = 100;
+    nList.insert(cInt);
+    it = nList.search(cInt);
+//    cIt = nList.search(cInt); No = conversion
+
+/*    nList.insert(100);
     nList.insert(69);
     nList.insert(101);
     nList.insert(77);
     nList.insert(53);
-
+*/
     std::cout << "nList size = " << nList.size() << std::endl;;
 
 //    nList.print();
     std::cout << nList << std::endl; // << Overload testing
 
-//    nList.remove(53); // Seg faults remove 
+    //Iterator testing:
+    
+//    it = nList.search(53);      
+//    it = nList.search(69);
+//    it = nList.search(77); 
+//    it = nList.search(100);
+//    it = nList.search(101);
+//    std::cout << "cIt = " << *cIt << std::endl;
+    std::cout << "it = " << *it << std::endl;
+
+//    nList.erase(it);
+    nList.remove(*it);
+
+//    nList.remove(53);
 //    nList.insert(69); // Test for duplicate removal
 //    nList.remove(69);
 //    nList.remove(77);
