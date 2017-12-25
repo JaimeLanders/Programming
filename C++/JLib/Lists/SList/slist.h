@@ -19,14 +19,18 @@
  *  Implement iterator 
  *      Allow erase from iterator X
  *      Build post increment X 
- *      Const iterator
+ *      Const iterator X
  *      Return iterator from insert
  *  Fix insert sort (Data issue) X
  *  Remove all elements by iterator X
  *  Return iterator from search X
+ *  Build front
+ *  Build insert_after
+ *  Build remove_after
  *  Add push_back(T&&)
  *  Add emplace_back(Args&&...)
  *  Copy as dlist and remove tail/insert/push_back.
+ *  Move into debug folder and clean up code for 1.0 release
  */
 
 //Preprocessor:
@@ -83,11 +87,10 @@ public:
         Iterator(Node * newPtr) : itPtr(newPtr){}               // Constructor
     public:
         Iterator() : itPtr(nullptr){}                           // Default constructor
-//        const T& operator * () const 
         T& operator * ()                                        // * Overload
         {
 //            DEBUG("\nIterator * overload");
-            assert(itPtr != nullptr);
+//            assert(itPtr != nullptr);
             return itPtr->data; 
         }                
         T& operator -> ()                                       // -> Overload 
@@ -96,13 +99,11 @@ public:
             return itPtr->data; 
         }               
         bool operator == (Iterator rhs)                         // Const == Overload
-//        bool operator == (const Iterator & rhs)                 // Const == Overload
         {
 //            DEBUG("\nIterator == overload");
             return (itPtr == rhs.itPtr);
         }
         bool operator != (Iterator rhs)                         // != Overload
-//        bool operator != (const Iterator & it)                  // != Overload
         {
 //            DEBUG("\nIterator != overload");
             return !(*this == rhs);
@@ -122,18 +123,14 @@ public:
        }
     };
     Iterator begin() noexcept                                   // Return iterator to first element
-//    const Iterator& begin() const noexcept
     {
 //        DEBUG("\nIterator begin ");
-//        return Iterator(nullptr);
         return Iterator(head);
     }
     Iterator end() noexcept                                     // Return iterator to last element
-//    const Iterator end() const noexcept
     {
 //        DEBUG("\nIterator end ");
         return Iterator(nullptr);
-//        return Iterator(tail);
     }
 
     // Const Iterator:
@@ -145,35 +142,35 @@ public:
         Const_Iterator(Node * newPtr) : itPtr(newPtr){}
     public:
         Const_Iterator() : itPtr(nullptr){}
-        Const_Iterator(Iterator it) {itPtr = it.itPtr;};                   // Convert iterator to const_iterator, working?
+        Const_Iterator(Iterator it) {itPtr = it.itPtr;};        // Convert iterator to const_iterator
         const T& operator * () const // Const & Overload
         { 
 //            DEBUG("\nConst_Iterator * overload");
             assert(itPtr != nullptr);
             return itPtr->data; 
         }    
-        const T& operator -> () const // Const -> Overload
+        const T& operator -> () const                           // Const -> Overload
         { 
 //            DEBUG("\nConst_Iterator -> overload");
             return itPtr->data; 
         }   
-        bool operator == (const Const_Iterator & rhs)                 // Const == Overload
+        bool operator == (const Const_Iterator & rhs)           // Const == Overload
         {
 //            DEBUG("\nConst_Iterator == overload");
             return (itPtr == rhs.itPtr);
         }
-        bool operator != (const Const_Iterator & rhs)                  // != Overload
+        bool operator != (const Const_Iterator & rhs)           // Const != Overload
         {
 //            DEBUG("\nConst_Iterator != overload");
             return !(*this == rhs);
         }       
-        Const_Iterator& operator ++ ()                                // Pre-increment
+        Const_Iterator& operator ++ ()                          // Const Pre-increment
         {
 //            DEBUG("\nConst_Iterator ++pre ");
             itPtr = itPtr->next;
             return *this;
         }
-        Const_Iterator operator ++ (int)                              // Post-increment
+        Const_Iterator operator ++ (int)                        // Const Post-increment
         {
 //            DEBUG("\nConst_Iterator post++ ");
             Const_Iterator temp = *this;
@@ -181,16 +178,12 @@ public:
             return temp;
         }
     };
-    Const_Iterator cBegin() const  noexcept
-//    const Iterator& begin() const noexcept
+    Const_Iterator cBegin() const  noexcept                     // Const begin
     {
 //        DEBUG("\ncBegin ");
-//        return Iterator(nullptr);
-        assert(head != nullptr);
         return Const_Iterator(head);
     }
-    Const_Iterator cEnd() const  noexcept
-//    const Iterator end() const noexcept
+    Const_Iterator cEnd() const  noexcept                       // Const end
     {
 //        DEBUG("\ncEnd ");
         return Const_Iterator(tail);
@@ -199,27 +192,26 @@ public:
     // Opperations:
     void clear();                                               // Clear list 
     bool empty() const;                                         // Test if list empty
-    void erase(Const_Iterator);                                       // Erase from list  
-//    void erase(Iterator);                                       // Erase from list  
-//    Iterator erase_after(Iterator);                           // Erase element after iterator, needs built 
-//    void front ();                                            // Return reference to first element, needs built  
-//    void insert_after(const T&);                              // In order insert, needs built
-    void insert(const T&);                                      // In order insert
+//    void emplace_back(Args&&...);                               // Insert at tail
+    void erase(Const_Iterator);                                 // Erase from list  
+    Iterator erase_after(Const_Iterator);                           // Erase from list after iterator  
+//    void erase_after(Const_Iterator, Const_Iterator);           // Erase from list from iterator to last iterator  
+    T& front ();                                                // Return reference to first element, needs built  
+    const T& front () const;                                    // Return const reference to first element, needs built  
+    Iterator insert_after(Const_Iterator, const T&);            // Insert after iterator, needs built
+    void insert(const T&);                                      // In order insert, deprecated
     void print() const;                                         // Print list
     void pop_back();                                            // Removes head
     void pop_front();                                           // Removes head
     void push_back(const T&);                                   // Insert at tail
+//    void push_back(const T&&);                                   // Insert at tail
     void push_front(const T&);                                  // Insert at head
-//    bool remove(T&);                                      // Remove all elements from list 
     bool remove(const T&);                                      // Remove all elements from list 
-    Iterator search(T);                            // Search list and return iterator, needs built
-//    Iterator search(const T&) const;                            // Search list and return iterator, needs built
-    Const_Iterator cSearch(const T&) const;                            // Search list and return iterator, needs built
-//    Const_Iterator search(const T&) const;                            // Search list and return iterator, needs built
-//    bool search(const T&) const;                                // Search list
+    Iterator search(const T&) const;                            // Search list and return iterator, needs built
+    Const_Iterator cSearch(const T&) const;                     // Search list and return iterator, needs built
     std::size_t size() const noexcept;                          // Return size of list
 //    void swap (SList<T>& other ){ std::swap(this, other);}    // Swap container, needs built 
-    friend std::ostream & operator << (std::ostream & os, const SList<T> & rhs)    // << Overload, needed?
+    friend std::ostream & operator << (std::ostream & os, const SList<T> & rhs)
     {
         DEBUG("\nSList operator << overload ");
 
@@ -345,7 +337,6 @@ void SList<T>::clear()
 
     while (it != nullptr)
     {
-//        temp = it++;
         temp = it->next;
         it->next = nullptr;
         deleteNode(it);
@@ -379,7 +370,6 @@ bool SList<T>::empty() const
 
 template<class T>
 void SList<T>::erase(Const_Iterator itIn)
-//void SList<T>::erase(Iterator itIn)
 {
     DEBUG("\nSList erase ");
 //    DEBUG("itIn = " << *itIn);
@@ -398,11 +388,9 @@ void SList<T>::erase(Const_Iterator itIn)
     else
     {
         for (Const_Iterator it = cBegin(); it != itIn; it++)
-//        for (Iterator it = begin(); it != itIn; it++)
         {
             DEBUG("it++ ");
             DEBUG("*it = " << *it);
-//            DEBUG("it->data = " << it->data);
             prev = it.itPtr;
         }
 
@@ -416,81 +404,67 @@ void SList<T>::erase(Const_Iterator itIn)
 }
 
 template<class T>
-bool SList<T>::remove(const T & x)
-//bool SList<T>::remove(T & x)
+typename SList<T>::Iterator SList<T>::erase_after(Const_Iterator itIn)
 {
-    DEBUG("\nSList remove " );
-    DEBUG("x = " << x);
+    DEBUG("\nSList erase after " );
+    DEBUG("itIn = " << *itIn);
 
-    T n = x; // Fix for invalid read
+    Node * temp;
 
-    bool found = false;
-
-//    for (Iterator it = begin(); it != nullptr; ++it) // Temp fix for end not returning nullptr
-    for (Iterator it = begin(); it != end(); ++it)
+    if (itIn.itPtr == head)
     {
-//        DEBUG("it != tail ");
-//        DEBUG("n = " << n);
-        assert(it != nullptr);
-        DEBUG("it = " << *it);
+        DEBUG("itIn is head ");
 
-        if (*it == n)  
-        {
-            Iterator prev = begin();
+        temp = itIn.itPtr->next;
+        head->next = temp->next;
+        deleteNode(temp);
+        listsize--;
 
-            
-            if(it == begin() && it == end()) // Head or head and tail
-            {
-                DEBUG(n << " is head and tail ");
-
-                pop_front(); 
-                it = nullptr;
-                found = true;
-                break;
-            }
-            else if(it == begin()) // Head
-            {
-                DEBUG(n << " is head ");
-
-                pop_front(); 
-                it = head;
-                found = true;
-            }
-            else if(it == end()) // Tail
-            {
-                DEBUG(n << " is tail ");
-
-                pop_back(); 
-                it = nullptr;
-                found = true;
-                break;
-            }
-            else // Not head or tail
-            {
-                DEBUG(n << " is neither head nor tail ");
-
-                erase(it);
-                it = prev;
-                found = true;
-            }
-
-            prev = it;
-
-       }
+        return Iterator(head->next);
     }
-
-    if (found == true) 
+    else if (itIn == tail) // Node after tail 
     {
-        DEBUG(n << " found and deleted ");
+        DEBUG("itIn is tail ");
 
-        return true;
+        return end();
+    }
+    else if (itIn.itPtr->next == nullptr) // Delete tail 
+    {
+        DEBUG("itIn->next is tail ");
+
+        pop_back();
+        return end();
     }
     else
     {
-        DEBUG(n << " not found ");
+        DEBUG("itIn not head or tail ");
 
-        return false;
+        temp = itIn.itPtr->next;
+        itIn.itPtr->next = temp->next;
+        temp->next = nullptr;
+        deleteNode(temp);
+        listsize--;
+
+        return(Iterator(itIn.itPtr->next));
     }
+}
+
+//    void erase_after(Const_Iterator, Const_Iterator);           // Erase from list from iterator to last iterator  
+
+template<class T>
+T& SList<T>::front ()
+{
+    DEBUG("\nSList front " );
+
+    return head->data;
+}
+
+template<class T>
+const T& SList<T>::front () const
+{
+    DEBUG("\nSList const front " );
+
+    return head->data;
 }
 
 template<class T>
@@ -556,6 +530,53 @@ void SList<T>::insert(const T & n)
 
             }
        }
+    }
+}
+
+template<class T>
+typename SList<T>::Iterator SList<T>::insert_after(Const_Iterator position, const T& n)           // Insert after iterator, needs built
+{
+    DEBUG("\nSList insert_after ");
+    if(head != nullptr)
+        DEBUG("position = " << *position);
+    DEBUG("n = " << n);
+
+    if (head == nullptr) // New list
+    {
+        DEBUG("New list ");
+
+        push_front(n);
+        return begin();
+    }
+    else
+    {
+        DEBUG("Adding to list ");
+
+        for(Const_Iterator it = cBegin(); it != end(); ++it) 
+        {
+            DEBUG("it != end ");
+
+            if (it == position)
+            {
+                DEBUG("it = position ");
+
+                Node * nNode = new Node(n) ;
+                Node * temp = it.itPtr;
+
+                temp->next = nNode;
+
+//                if(it.itPtr->next == nullptr)
+//                {
+//                    DEBUG("itPtr->next = nullptr ");
+                    tail = nNode;
+//                    DEBUG("tail = " << tail->data);
+//                }
+
+                listsize++;
+
+                return Iterator(nNode);
+            }
+        }
     }
 }
 
@@ -702,7 +723,6 @@ void SList<T>::push_front(const T &n)
         listsize++;
 
     }
-//    assert(head != nullptr);
 }
 
 template<class T>
@@ -720,25 +740,85 @@ void SList<T>::print() const
 }
 
 template<class T>
-typename SList<T>::Iterator SList<T>::search(T n)
-//typename SList<T>::Iterator SList<T>::search(const T &n) const
-//bool SList<T>::search(const T &n) const
+bool SList<T>::remove(const T & x)
 {
-    DEBUG("\nSList search ");
-    DEBUG("n = " << n);
+    DEBUG("\nSList remove " );
+    DEBUG("x = " << x);
 
-    for (Node * it = head; it != nullptr; it = it->next)
+    T n = x; // Fix for invalid read
+
+    bool found = false;
+
+    for (Iterator it = begin(); it != end(); ++it)
     {
-       if (it->data == n) 
-           return Iterator(it);
+        DEBUG("it != tail ");
+        DEBUG("n = " << n);
+        assert(it != nullptr);
+        DEBUG("it = " << *it);
+
+        if (*it == n)  
+        {
+            Iterator prev = begin();
+
+            
+            if(it == begin() && ++it == end()) // Head or head and tail
+            {
+                DEBUG(n << " is head and tail ");
+
+                pop_front(); 
+                it = nullptr;
+                found = true;
+                break;
+            }
+            else if(it == begin()) // Head
+            {
+                DEBUG(n << " is head ");
+
+                pop_front(); 
+                it = head;
+                found = true;
+            }
+            else if(it == end()) // Tail
+            {
+                DEBUG(n << " is tail ");
+
+                pop_back(); 
+                it = nullptr;
+                found = true;
+                break;
+            }
+            else // Not head or tail
+            {
+                DEBUG(n << " is neither head nor tail ");
+
+                erase(it);
+                it = prev;
+                found = true;
+            }
+
+            prev = it;
+
+       }
     }
 
-    return nullptr;
+    DEBUG("check ");
+
+    if (found == true) 
+    {
+//        DEBUG(n << " found and deleted ");
+
+        return true;
+    }
+    else
+    {
+//        DEBUG(n << " not found ");
+
+        return false;
+    }
 }
 
 template<class T>
 typename SList<T>::Const_Iterator SList<T>::cSearch(const T & n) const
-//typename SList<T>::Const_Iterator SList<T>::search(const T & n) const
 {
     DEBUG("\nSList cSearch ");
     DEBUG("n = " << n);
@@ -752,6 +832,22 @@ typename SList<T>::Const_Iterator SList<T>::cSearch(const T & n) const
     }
 
     DEBUG("return nullptr ");
+
+    return nullptr;
+}
+
+template<class T>
+//typename SList<T>::Iterator SList<T>::search(T n)
+typename SList<T>::Iterator SList<T>::search(const T &n) const
+{
+    DEBUG("\nSList search ");
+    DEBUG("n = " << n);
+
+    for (Node * it = head; it != nullptr; it = it->next)
+    {
+       if (it->data == n) 
+           return Iterator(it);
+    }
 
     return nullptr;
 }

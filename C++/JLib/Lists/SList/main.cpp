@@ -44,21 +44,34 @@ int main ()
 
 //    nList.print();
     std::cout << nList << std::endl; // << Overload testing
-
+//    std::cout << "front = " << nList.front() << std::endl;
+*/
     //Iterator testing:
     
-//    it = nList.search(53);      
-//    it = nList.search(69);
-//    it = nList.search(77); 
+     it = nList.insert_after(nList.cBegin(), 100);
+    it = nList.insert_after(it, 69);
+    it = nList.insert_after(it, 101);
+    it = nList.insert_after(it, 77);
+    it = nList.insert_after(it, 53);
+
+    std::cout << "nList size = " << nList.size() << std::endl;;
+//    std::cout << nList << std::endl; // << Overload testing
+
+   
 //    it = nList.search(100);
+//    it = nList.search(69);
 //    it = nList.search(101);
-//    std::cout << "cIt = " << *cIt << std::endl;
+//    it = nList.search(77);
+    it = nList.search(53);        
+//    std::cout << "it = " << *it << std::endl;
+
+    it = nList.erase_after(it);
+//    it = nList.erase_after(it);
+//    it = nList.erase_after(it);
 //    std::cout << "it = " << *it << std::endl;
 
 //    nList.erase(it);
-//    nList.remove(*it); // not removing last element
-
-//    assert(breakpt == false);
+//    nList.remove(*it);
 
 //    nList.remove(53);
 //    nList.insert(69); // Test for duplicate removal
@@ -68,7 +81,7 @@ int main ()
 //    nList.remove(101);
 
 //    nList.erase(nList.begin());
-//    nList.erase(nList.end()); // Seg fault, end returns nullptr
+//    nList.erase(nList.end()); // Seg faults on nullptr
 
 //    nList.pop_back();
 //    nList.pop_front();
@@ -78,31 +91,33 @@ int main ()
     std::cout << "nList size = " << nList.size() << std::endl;;
 
     std::cout << nList << std::endl; // << Overload testing
-*/
-/*    // Const testing:
+
+    // Const testing:
     
-    const int cInt = 100;
+/*    const int cInt = 100;
 
     nList.insert(cInt);
-//    cIt = nList.search(cInt);
-//    std::cout << "cIt = " << *cIt << std::endl;
+    cIt = nList.search(cInt);
+    std::cout << "cIt = " << *cIt << std::endl;
 //    cIt = nList.search(cInt); No = conversion
 
-//    cIt = nList.cBegin();
+    cIt = nList.cBegin();
 //    cIt = nList.cEnd();
 //    cIt = nList.cSearch(cInt);
     std::cout << "cIt = " << *cIt << std::endl;
 
-
-//    std::cout << "nList size = " << nList.size() << std::endl;;
+    std::cout << "nList size = " << nList.size() << std::endl;;
 //    std::cout << nList << std::endl; // << Overload testing
+    std::cout << "front = " << nList.front() << std::endl;
 
 //    nList.erase(cIt);
-    nList.remove(*cIt);
+    nList.remove(*cIt); // Invalid read on all
+
+//    assert(breakpt == false);
 */
     // Const list testing:
-
-/*    const SList<int> cList(cInt);
+/*
+    const SList<int> cList(cInt);
 //    cIt = cList.cBegin();
 //    cIt = cList.cEnd();
     cIt = cList.cSearch(cInt);
@@ -110,6 +125,7 @@ int main ()
 
     std::cout << "cList size = " << cList.size() << std::endl;;
     std::cout << cList << std::endl; // << Overload testing
+    std::cout << "front = " << cList.front() << std::endl;
 
     cIt = cList.cSearch(100);
     std::cout << "cIt = " << *cIt << std::endl;
@@ -121,7 +137,7 @@ int main ()
     //===================//
     // dList operations: //
     //===================//
-
+/*
 //    nData.setData(nString, 123);
 //    nData.setData(nString);
     nData.setData(123);
@@ -138,11 +154,11 @@ int main ()
 
 //    dList.remove(nData);
 
-/*    if (dList.search(nData) == true)
+*//*    if (dList.search(nData) == true)
 //        std::cout << nData << " found" << std::endl;
     else
         std::cout << nData << " not found" << std::endl;
-*/
+*//*
     // Construtor/Assignment Testing
     
     SList<Data<int>> dList2(dList); // Copy constructor
@@ -178,6 +194,6 @@ int main ()
     
 //    dList.pop_back();
 //    dList.pop_front();
-
+*/
     return 0;
 }
