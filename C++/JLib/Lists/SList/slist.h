@@ -24,11 +24,17 @@
  *  Fix insert sort (Data issue) X
  *  Remove all elements by iterator X
  *  Return iterator from search X
- *  Build front
- *  Build insert_after
- *  Build remove_after
- *  Add push_back(T&&)
+ *  Build front X
+ *  Build insert_after X
+ *      Fix tail X
+ *  Build remove_after X
+ *  Build remove_after range X
+ *  Add push_back(T&&) X
+ *  Add push_front(T&&) X
+ *  Add before begin, cbefore_begin
  *  Add emplace_back(Args&&...)
+ *  Add emplace_front(Args&&...)
+ *  Add emplace_after(Args&&...)
  *  Copy as dlist and remove tail/insert/push_back.
  *  Move into debug folder and clean up code for 1.0 release
  */
@@ -53,6 +59,10 @@
 #include <cassert>
 #include <iostream>
 
+//template <class... Ts> class SList{};
+
+//template <class T, class ... Ts>
+//class SList<T, Ts...>
 template<class T>
 class SList
 {
@@ -122,6 +132,11 @@ public:
             return temp;
        }
     };
+    Iterator before_begin() const  noexcept                     // Before begin
+    {
+//        DEBUG("\nbefore_begin ");
+        return Iterator(&this->head);
+    }
     Iterator begin() noexcept                                   // Return iterator to first element
     {
 //        DEBUG("\nIterator begin ");
@@ -142,7 +157,7 @@ public:
         Const_Iterator(Node * newPtr) : itPtr(newPtr){}
     public:
         Const_Iterator() : itPtr(nullptr){}
-        Const_Iterator(Iterator it) {itPtr = it.itPtr;};        // Convert iterator to const_iterator
+        Const_Iterator(Iterator it) {itPtr = it.itPtr;}         // Convert iterator to const_iterator
         const T& operator * () const // Const & Overload
         { 
 //            DEBUG("\nConst_Iterator * overload");
@@ -178,34 +193,43 @@ public:
             return temp;
         }
     };
-    Const_Iterator cBegin() const  noexcept                     // Const begin
+    Const_Iterator cbefore_begin() const  noexcept                     // Const begin
     {
-//        DEBUG("\ncBegin ");
+        DEBUG("\ncbefore_begin ");
+        return Const_Iterator(this->head);
+    }
+    Const_Iterator cbegin() const  noexcept                     // Const begin
+    {
+        DEBUG("\ncbegin ");
         return Const_Iterator(head);
     }
-    Const_Iterator cEnd() const  noexcept                       // Const end
+    Const_Iterator cend() const  noexcept                       // Const end
     {
-//        DEBUG("\ncEnd ");
+        DEBUG("\ncend ");
         return Const_Iterator(tail);
     }
 
     // Opperations:
     void clear();                                               // Clear list 
     bool empty() const;                                         // Test if list empty
+//    void emplace_after(Args&&...);                              // Insert at tail
 //    void emplace_back(Args&&...);                               // Insert at tail
+    void emplace_front(T&&...);                                 // Insert at tail
+    void emplace_front(T&&);                                 // Insert at tail
     void erase(Const_Iterator);                                 // Erase from list  
-    Iterator erase_after(Const_Iterator);                           // Erase from list after iterator  
-//    void erase_after(Const_Iterator, Const_Iterator);           // Erase from list from iterator to last iterator  
+    Iterator erase_after(Const_Iterator);                       // Erase from list after iterator  
+    Iterator erase_after(Const_Iterator, Const_Iterator);       // Erase from list iterator range   
     T& front ();                                                // Return reference to first element, needs built  
     const T& front () const;                                    // Return const reference to first element, needs built  
     Iterator insert_after(Const_Iterator, const T&);            // Insert after iterator, needs built
     void insert(const T&);                                      // In order insert, deprecated
-    void print() const;                                         // Print list
+    void print() const;                                         // Print list structure
     void pop_back();                                            // Removes head
     void pop_front();                                           // Removes head
     void push_back(const T&);                                   // Insert at tail
-//    void push_back(const T&&);                                   // Insert at tail
+    void push_back(T&&);                                        // Insert at tail (move)
     void push_front(const T&);                                  // Insert at head
+    void push_front(T&&);                                       // Insert at head (move)
     bool remove(const T&);                                      // Remove all elements from list 
     Iterator search(const T&) const;                            // Search list and return iterator, needs built
     Const_Iterator cSearch(const T&) const;                     // Search list and return iterator, needs built
@@ -355,8 +379,29 @@ void SList<T>::deleteNode(const Node * nodeIn)
     assert(nodeIn != nullptr);
     delete nodeIn;
 }
+/*
+template<class... T>
+void emplace_front(T&&... ts)
+{
+    DEBUG("\nSList emplace front ");
+//    DEBUG("ts = " << ts);
 
+//    Node node = new node(std::forward<T>(ts)...);    
+//    Node node(next_node, std::forward<T>(ts)...);    
+//    emplace_front(ts...);
+//    push_front(t);
 
+}
+*//*
+template<class T>
+void SList<T>::emplace_front(T&& t)
+{
+    DEBUG("\nSList emplace front base ");
+    DEBUG("t = " << t);
+
+    push_front(t);
+}
+*/
 template<class T>
 bool SList<T>::empty() const
 {
@@ -387,7 +432,7 @@ void SList<T>::erase(Const_Iterator itIn)
     }
     else
     {
-        for (Const_Iterator it = cBegin(); it != itIn; it++)
+        for (Const_Iterator it = cbegin(); it != itIn; it++)
         {
             DEBUG("it++ ");
             DEBUG("*it = " << *it);
@@ -449,8 +494,27 @@ typename SList<T>::Iterator SList<T>::erase_after(Const_Iterator itIn)
     }
 }
 
-//    void erase_after(Const_Iterator, Const_Iterator);           // Erase from list from iterator to last iterator  
+template<class T>
+typename SList<T>::Iterator SList<T>::erase_after(Const_Iterator itIn1, Const_Iterator itIn2)
+{
+    DEBUG("\nSList erase after range " );
+    DEBUG("itIn1 = " << *itIn1);
+    DEBUG("itIn2 = " << *itIn2);
 
+    Const_Iterator it = Iterator(itIn1.itPtr);
+
+    while (it != itIn2)
+//    for (Const_Iterator it = itIn1; it != itIn2; it++)
+    {
+        DEBUG("it != itIn2 ");
+//        DEBUG("it = " << *it);
+        it = erase_after(itIn1); 
+//        erase_after(itIn1); 
+    }
+
+    return Iterator(it.itPtr);
+
+}
 template<class T>
 T& SList<T>::front ()
 {
@@ -534,14 +598,14 @@ void SList<T>::insert(const T & n)
 }
 
 template<class T>
-typename SList<T>::Iterator SList<T>::insert_after(Const_Iterator position, const T& n)           // Insert after iterator, needs built
+typename SList<T>::Iterator SList<T>::insert_after(Const_Iterator position, const T & n)          // Insert after iterator, needs built
 {
     DEBUG("\nSList insert_after ");
     if(head != nullptr)
         DEBUG("position = " << *position);
     DEBUG("n = " << n);
 
-    if (head == nullptr) // New list
+    if (head == nullptr || position == cbefore_begin()) // New list
     {
         DEBUG("New list ");
 
@@ -552,7 +616,8 @@ typename SList<T>::Iterator SList<T>::insert_after(Const_Iterator position, cons
     {
         DEBUG("Adding to list ");
 
-        for(Const_Iterator it = cBegin(); it != end(); ++it) 
+        for(Const_Iterator it = cbefore_begin(); it != end(); ++it) 
+//        for(Const_Iterator it = cbegin(); it != end(); ++it) 
         {
             DEBUG("it != end ");
 
@@ -565,12 +630,13 @@ typename SList<T>::Iterator SList<T>::insert_after(Const_Iterator position, cons
 
                 temp->next = nNode;
 
+                if(it == tail)
 //                if(it.itPtr->next == nullptr)
-//                {
-//                    DEBUG("itPtr->next = nullptr ");
+                {
+                    DEBUG("it = tail ");
                     tail = nNode;
-//                    DEBUG("tail = " << tail->data);
-//                }
+                    DEBUG("tail = " << tail->data);
+                }
 
                 listsize++;
 
@@ -693,7 +759,20 @@ void SList<T>::push_back(const T &n)
 }
 
 template<class T>
-void SList<T>::push_front(const T &n)
+void SList<T>::push_back(T && rhs)
+{
+    DEBUG("\nSList push_back (move) ");
+    DEBUG("rhs = " << rhs);
+
+    T temp = rhs;
+    rhs = {}; 
+
+    push_back(temp);
+}
+
+
+template<class T>
+void SList<T>::push_front(const T & n)
 {
     DEBUG("\nSList push_front ");
     DEBUG("n = " << n);
@@ -726,6 +805,22 @@ void SList<T>::push_front(const T &n)
 }
 
 template<class T>
+void SList<T>::push_front(T && rhs)
+{
+    DEBUG("\nSList push_front (move) ");
+    DEBUG("rhs = " << rhs);
+//bp
+//    Node * nNode = new Node;
+//    nNode->data = std::move(rhs);
+
+    T temp = rhs;
+    rhs = {}; 
+
+//    push_front(std::move(rhs));
+    push_front(temp);
+}
+
+template<class T>
 void SList<T>::print() const
 {
     DEBUG("\nSList print ");
@@ -734,7 +829,22 @@ void SList<T>::print() const
 
     while (it != nullptr)
     {
-        std::cout << it->data << std::endl;
+        if (it == head)
+        {
+            std::cout << "head -> ";
+        }
+
+        std::cout << it->data;
+
+        if (it->next != nullptr)
+        {
+            std::cout << " -> ";
+        }
+        else
+        {
+            std::cout << " <- tail " << std::endl;
+        }
+
         it = it->next;
     }
 }
