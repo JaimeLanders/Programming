@@ -1,0 +1,11 @@
+main.cpp: In function ‘int main()’:
+main.cpp:44:28: error: no match for ‘operator=’ (operand types are ‘SList<int>::Const_Iterator’ and ‘SList<int>::Iterator’)
+     cIt = nList.search(cInt);
+                            ^
+In file included from main.cpp:6:0:
+slist.h:141:11: note: candidate: constexpr SList<int>::Const_Iterator& SList<int>::Const_Iterator::operator=(const SList<int>::Const_Iterator&)
+     class Const_Iterator
+           ^~~~~~~~~~~~~~
+slist.h:141:11: note:   no known conversion for argument 1 from ‘SList<int>::Iterator’ to ‘const SList<int>::Const_Iterator&’
+slist.h:141:11: note: candidate: constexpr SList<int>::Const_Iterator& SList<int>::Const_Iterator::operator=(SList<int>::Const_Iterator&&)
+slist.h:141:11: note:   no known conversion for argument 1 from ‘SList<int>::Iterator’ to ‘SList<int>::Const_Iterator&&’

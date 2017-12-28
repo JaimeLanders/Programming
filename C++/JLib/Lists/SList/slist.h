@@ -31,7 +31,7 @@
  *  Build remove_after range X
  *  Add push_back(T&&) X
  *  Add push_front(T&&) X
- *  Add before begin, cbefore_begin
+ *  Add before begin, cbefore_begin X
  *  Add emplace_back(Args&&...)
  *  Add emplace_front(Args&&...)
  *  Add emplace_after(Args&&...)
@@ -75,7 +75,13 @@ private:
         Node * next;
         T data;
     };
-    Node * head;                                                // Pointer to first node 
+/*    struct Node : public Node_base
+    {
+        template<class... Args> Node(Args&&... args) : Node(), data(std::forward<Args>(args)...){}
+
+        T data;
+    };
+*/    Node * head;                                                // Pointer to first node 
     Node * tail;                                                // Pointer to last node (remove from sList); 
     std::size_t listsize;                                       // Container size
     void deleteNode(const Node*);                               // Delete node 
@@ -214,8 +220,7 @@ public:
     bool empty() const;                                         // Test if list empty
 //    void emplace_after(Args&&...);                              // Insert at tail
 //    void emplace_back(Args&&...);                               // Insert at tail
-    void emplace_front(T&&...);                                 // Insert at tail
-    void emplace_front(T&&);                                 // Insert at tail
+//    void emplace_front(Args&&...);                                 // Insert at tail
     void erase(Const_Iterator);                                 // Erase from list  
     Iterator erase_after(Const_Iterator);                       // Erase from list after iterator  
     Iterator erase_after(Const_Iterator, Const_Iterator);       // Erase from list iterator range   
@@ -380,26 +385,18 @@ void SList<T>::deleteNode(const Node * nodeIn)
     delete nodeIn;
 }
 /*
-template<class... T>
-void emplace_front(T&&... ts)
+template<typename... Args>
+void emplace_front(Args&&... args)
 {
     DEBUG("\nSList emplace front ");
 //    DEBUG("ts = " << ts);
+
+   insert_after(cbefore_begin(), std::forward<Args>(args)...);
 
 //    Node node = new node(std::forward<T>(ts)...);    
 //    Node node(next_node, std::forward<T>(ts)...);    
 //    emplace_front(ts...);
 //    push_front(t);
-
-}
-*//*
-template<class T>
-void SList<T>::emplace_front(T&& t)
-{
-    DEBUG("\nSList emplace front base ");
-    DEBUG("t = " << t);
-
-    push_front(t);
 }
 */
 template<class T>
@@ -727,6 +724,35 @@ void SList<T>::pop_front()
 }
 
 template<class T>
+void SList<T>::print() const
+{
+    DEBUG("\nSList print ");
+    
+    Node * it = head;
+
+    while (it != nullptr)
+    {
+        if (it == head)
+        {
+            std::cout << "head -> ";
+        }
+
+        std::cout << it->data;
+
+        if (it->next != nullptr)
+        {
+            std::cout << " -> ";
+        }
+        else
+        {
+            std::cout << " <- tail " << std::endl;
+        }
+
+        it = it->next;
+    }
+}
+
+template<class T>
 void SList<T>::push_back(const T &n)
 {
     DEBUG("\nSList push_back ");
@@ -818,35 +844,6 @@ void SList<T>::push_front(T && rhs)
 
 //    push_front(std::move(rhs));
     push_front(temp);
-}
-
-template<class T>
-void SList<T>::print() const
-{
-    DEBUG("\nSList print ");
-    
-    Node * it = head;
-
-    while (it != nullptr)
-    {
-        if (it == head)
-        {
-            std::cout << "head -> ";
-        }
-
-        std::cout << it->data;
-
-        if (it->next != nullptr)
-        {
-            std::cout << " -> ";
-        }
-        else
-        {
-            std::cout << " <- tail " << std::endl;
-        }
-
-        it = it->next;
-    }
 }
 
 template<class T>
