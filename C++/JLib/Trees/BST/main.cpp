@@ -5,12 +5,16 @@ int main ()
 {
     std::cout << "Welcome to BST driver " << std::endl;
 
-    BST<int> bst;
+    jtd::BST<int> bst;
+    jtd::BST<int>::iterator it;
 
     int * num1{};
     int * num2{};
     int * num3{};
-    int temp = 2;
+    int numsSize = 10;
+    int nums[numsSize] = {6,3,8,1,5,7,9,0,2,4};
+//    int nums[numsSize] = {0,1,2,3,4,5,6,7,8,9};
+/*    int temp = 2;
 
     num1 = &temp;
     std::cout << "num1 = " << *num1 << std::endl;
@@ -25,6 +29,22 @@ int main ()
     num3 = &temp;
     std::cout << "num3 = " << *num3 << std::endl;
     bst.insert(*num3);
+*/
+    for(int i = 0; i < numsSize; i++)
+    {
+        bst.insert(nums[i]);
+    }
 
+    it = bst.begin();
+    std::cout << "root = " << *it << std::endl;
+
+    if(bst.empty())
+    {
+        std::cout << "tree is empty " << std::endl;
+    }
+    else
+    {
+        std::cout << "tree is not empty, it's size is " << bst.size() << std::endl;
+    }
     return 0;
 }
