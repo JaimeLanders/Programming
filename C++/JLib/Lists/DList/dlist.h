@@ -1,16 +1,12 @@
-/*  Title:   DList.h
- *  Creator: Jaime "jland13" Landers
- *  Purpose: Doubly linked list for educational purposes and future use
- *  Sources: Too many to list
+/*  Title:      DList.h
+ *  Creator:    Jaime "jland13" Landers
+ *  Purpose:    Doubly linked list for educational purposes and future use
+ *  Sources:    Too many to list
  *
  *  TODO:
- *
- * Add rbegin/crbegin X
- * Add rend/crend X
- * Add reverse_iterator/const_reverse_iterator
- * Add back
- * Add emplace front
- * Add emplace back
+ *  Add reverse_iterator/const_reverse_iterator
+ *  Add insert
+ *  Add emplace, emplace front, emplace back
  *
  */
 
@@ -19,10 +15,10 @@
 #define DList_H
 
 // Disable Assertions:
-#define NDEBUG
+//#define NDEBUG
 
 //Debug macro:
-//#define DList_DEBUG
+#define DList_DEBUG
 #ifdef  DList_DEBUG
 #define DEBUG(x) do { std::cerr << x <<std::endl; } while (0)
 #else
@@ -84,15 +80,15 @@ public:
 //            DEBUG("\niterator -> overload");
             return itPtr->data; 
         }               
-        bool operator == (iterator rhs)                         // Const == Overload
+        friend bool operator == (iterator lhs, iterator rhs)                         // Const == Overload
         {
 //            DEBUG("\niterator == overload");
-            return (itPtr == rhs.itPtr);
+            return (lhs.itPtr == rhs.itPtr);
         }
-        bool operator != (iterator rhs)                         // != Overload
+        friend bool operator != (iterator lhs, iterator rhs)                         // != Overload
         {
 //            DEBUG("\niterator != overload");
-            return !(*this == rhs);
+            return !(lhs == rhs);
         }       
         iterator& operator ++ ()                                // Pre-increment
         {
@@ -122,7 +118,7 @@ public:
        }
 
     };
-    iterator before_begin() const  noexcept                     // Before begin
+    iterator before_begin() const  noexcept                     // Before begin, deprecated
     {
 //        DEBUG("\nbefore_begin ");
         return iterator(&this->head);
@@ -137,12 +133,12 @@ public:
 //        DEBUG("\niterator end ");
         return iterator(nullptr);
     }
-    iterator rbegin() noexcept                                   // Return iterator to first element
+    iterator rbegin() noexcept                                  // Return iterator to first element
     {
 //        DEBUG("\niterator begin ");
         return iterator(tail);
     }
-    iterator rend() noexcept                                     // Return iterator to last element
+    iterator rend() noexcept                                    // Return iterator to last element
     {
 //        DEBUG("\niterator end ");
         return iterator(nullptr);
@@ -168,15 +164,15 @@ public:
 //            DEBUG("\nconst_iterator -> overload");
             return itPtr->data; 
         }   
-        bool operator == (const const_iterator & rhs)           // Const == Overload
+        friend bool operator == (const const_iterator & lhs, const const_iterator & rhs)           // Const == Overload
         {
 //            DEBUG("\nconst_iterator == overload");
-            return (itPtr == rhs.itPtr);
+            return (lhs.itPtr == rhs.itPtr);
         }
-        bool operator != (const const_iterator & rhs)           // Const != Overload
+        friend bool operator != (const const_iterator & lhs, const const_iterator & rhs)           // Const != Overload
         {
 //            DEBUG("\nconst_iterator != overload");
-            return !(*this == rhs);
+            return !(lhs == rhs);
         }       
         const_iterator& operator ++ ()                          // Const Pre-increment
         {
@@ -205,59 +201,61 @@ public:
             return temp;
         }
     };
-    const_iterator cbefore_begin() const  noexcept                     // Const begin
+    const_iterator cbefore_begin() const  noexcept              // Const begin, deprecated
     {
-        DEBUG("\ncbefore_begin ");
+//        DEBUG("\ncbefore_begin ");
         return const_iterator(this->head);
     }
     const_iterator cbegin() const  noexcept                     // Const begin
     {
-        DEBUG("\ncbegin ");
+//        DEBUG("\ncbegin ");
         return const_iterator(head);
     }
     const_iterator cend() const  noexcept                       // Const end
     {
-        DEBUG("\ncend ");
+//        DEBUG("\ncend ");
         return const_iterator(nullptr);
     }
-    const_iterator crbegin() const  noexcept                     // Const begin
+    const_iterator crbegin() const  noexcept                    // Const begin
     {
-        DEBUG("\ncbegin ");
+//        DEBUG("\ncbegin ");
         return const_iterator(tail);
     }
-    const_iterator crend() const  noexcept                       // Const end
+    const_iterator crend() const  noexcept                      // Const end
     {
-        DEBUG("\ncend ");
+//        DEBUG("\ncend ");
         return const_iterator(nullptr);
     }
     // Opperations:
     void clear();                                               // Clear list 
     bool empty() const;                                         // Test if list empty
-//    void emplace_after(Args&&...);                              // Insert at tail
-//    void emplace_back(Args&&...);                               // Insert at tail
-//    void emplace_front(Args&&...);                              // Insert at tail
+//    void emplace(Args&&...);                                    // Insert in place at position 
+//    void emplace_back(Args&&...);                               // Insert in place at tail 
+//    void emplace_front(Args&&...);                              // Insert in place at head 
     void erase(const_iterator);                                 // Erase from list  
-    iterator erase_after(const_iterator);                       // Erase from list after iterator  
-    iterator erase_after(const_iterator, const_iterator);       // Erase from list iterator range   
-    T& front ();                                                // Return reference to first element, needs built  
-    const T& front () const;                                    // Return const reference to first element, needs built  
-    iterator insert_after(const_iterator, const T&);            // Insert after iterator, needs built
-    void insert(const T&);                                      // In order insert, deprecated
+    iterator erase_after(const_iterator);                       // Erase from list after iterator, deprecated  
+    iterator erase_after(const_iterator, const_iterator);       // Erase from list iterator range, deprecated   
+    T& back ();                                                 // Return reference to last element
+    T& front ();                                                // Return reference to first element
+    const T& back () const;                                     // Return const reference to last element
+    const T& front () const;                                    // Return const reference to first element
+    iterator insert_after(const_iterator, const T&);            // Insert after iterator, deprecated
+//    void insert(const T&);                                      // Insert at position
     void print() const;                                         // Print list structure
-    void pop_back();                                            // Removes head
+    void pop_back();                                            // Removes tail 
     void pop_front();                                           // Removes head
     void push_back(const T&);                                   // Insert at tail
     void push_back(T&&);                                        // Insert at tail (move)
     void push_front(const T&);                                  // Insert at head
     void push_front(T&&);                                       // Insert at head (move)
     bool remove(const T&);                                      // Remove all elements from list 
-    iterator search(const T&) const;                            // Search list and return iterator, needs built
-    const_iterator cSearch(const T&) const;                     // Search list and return iterator, needs built
+    iterator search(const T&) const;                            // Search list and return iterator
+    const_iterator cSearch(const T&) const;                     // Search list and return const_iterator
     std::size_t size() const noexcept;                          // Return size of list
 //    void swap (DList<T>& other ){ std::swap(this, other);}    // Swap container, needs built 
     friend std::ostream & operator << (std::ostream & os, const DList<T> & rhs)
     {
-        DEBUG("\nDList operator << overload ");
+//        DEBUG("\nDList operator << overload ");
 
         node *it = rhs.head;
 
@@ -278,7 +276,7 @@ public:
     }
     friend void swap (DList<T>& d1, DList<T>& d2)               // Swap function
     {
-        DEBUG("\nDList swap ");
+//        DEBUG("\nDList swap ");
 
         std::swap(d1.head, d2.head);
         std::swap(d1.tail, d2.tail);
@@ -290,7 +288,7 @@ public:
 template<class T>
 DList<T>::DList(const T & n)
 {
-    DEBUG("\nDList constructor ");
+//    DEBUG("\nDList constructor ");
 
     head = nullptr;
     tail = nullptr;
@@ -302,7 +300,7 @@ DList<T>::DList(const T & n)
 template<class T>
 DList<T>::~DList()
 {
-    DEBUG("\nDList destructor ");
+//    DEBUG("\nDList destructor ");
 
     this->clear();
 }
@@ -310,7 +308,7 @@ DList<T>::~DList()
 template<class T>
 DList<T>::DList(const DList<T>& rhs)
 {
-    DEBUG("\nDList copy constructor ");
+//    DEBUG("\nDList copy constructor ");
 
     this->head = nullptr;
     this->tail = nullptr;
@@ -324,13 +322,13 @@ DList<T>::DList(const DList<T>& rhs)
         }
     }
 
-    DEBUG("nList.listsize = " << this->listsize);
+//    DEBUG("nList.listsize = " << this->listsize);
 }
 
 template<class T>
 DList<T>::DList(DList<T>&& rhs)
 {
-    DEBUG("\nDList move copy constructor ");
+//    DEBUG("\nDList move copy constructor ");
 
     this->head = rhs.head;
     this->tail = rhs.tail;
@@ -344,7 +342,7 @@ DList<T>::DList(DList<T>&& rhs)
 template<class T>
 DList<T>& DList<T>::operator = (const DList<T>& rhs)
 {
-    DEBUG("\nDList assignment overload ");
+//    DEBUG("\nDList assignment overload ");
 
     if (this != &rhs)
     {
@@ -358,7 +356,7 @@ DList<T>& DList<T>::operator = (const DList<T>& rhs)
 template<class T>
 DList<T>& DList<T>::operator = (DList<T>&& rhs) noexcept
 {
-    DEBUG("\nDList move assignment overload ");
+//    DEBUG("\nDList move assignment overload ");
 
     if (this != &rhs)
     {
@@ -372,9 +370,25 @@ DList<T>& DList<T>::operator = (DList<T>&& rhs) noexcept
 }
 
 template<class T>
+T& DList<T>::back ()
+{
+//    DEBUG("\nDList front " );
+
+    return tail->data;
+}
+
+template<class T>
+const T& DList<T>::back () const
+{
+//    DEBUG("\nDList const front " );
+
+    return tail->data;
+}
+
+template<class T>
 void DList<T>::clear()
 {
-    DEBUG("\nDList clear ");
+//    DEBUG("\nDList clear ");
 
     node *it = head;
     node *temp = head;
@@ -393,8 +407,8 @@ void DList<T>::clear()
 template<class T>
 void DList<T>::deletenode(const node * nodeIn)
 {
-    DEBUG("\nDList deletenode ");
-    DEBUG("nodeIn data = " << nodeIn->data);
+//    DEBUG("\nDList deletenode ");
+//    DEBUG("nodeIn data = " << nodeIn->data);
 
     assert(nodeIn != nullptr);
     delete nodeIn;
@@ -403,7 +417,7 @@ void DList<T>::deletenode(const node * nodeIn)
 template<typename... Args>
 void emplace_front(Args&&... args)
 {
-    DEBUG("\nDList emplace front ");
+//    DEBUG("\nDList emplace front ");
 //    DEBUG("ts = " << ts);
 
    insert_after(cbefore_begin(), std::forward<Args>(args)...);
@@ -417,7 +431,7 @@ void emplace_front(Args&&... args)
 template<class T>
 bool DList<T>::empty() const
 {
-    DEBUG("\nDList empty ");
+//    DEBUG("\nDList empty ");
 
     if (head == nullptr)
         return true;
@@ -428,7 +442,7 @@ bool DList<T>::empty() const
 template<class T>
 void DList<T>::erase(const_iterator itIn)
 {
-    DEBUG("\nDList erase ");
+//    DEBUG("\nDList erase ");
 //    DEBUG("itIn = " << *itIn);
 
     node * temp = itIn.itPtr;
@@ -446,8 +460,8 @@ void DList<T>::erase(const_iterator itIn)
     {
         for (const_iterator it = cbegin(); it != itIn; it++)
         {
-            DEBUG("it++ ");
-            DEBUG("*it = " << *it);
+//            DEBUG("it++ ");
+//            DEBUG("*it = " << *it);
             prev = it.itPtr;
         }
 
@@ -464,14 +478,14 @@ void DList<T>::erase(const_iterator itIn)
 template<class T>
 typename DList<T>::iterator DList<T>::erase_after(const_iterator itIn)
 {
-    DEBUG("\nDList erase after " );
-    DEBUG("itIn = " << *itIn);
+//    DEBUG("\nDList erase after " );
+//    DEBUG("itIn = " << *itIn);
 
     node * temp;
 
     if (itIn.itPtr == head)
     {
-        DEBUG("itIn is head ");
+//        DEBUG("itIn is head ");
 
         temp = itIn.itPtr->next;
         head->next = temp->next;
@@ -483,20 +497,20 @@ typename DList<T>::iterator DList<T>::erase_after(const_iterator itIn)
     }
     else if (itIn == tail) // node after tail 
     {
-        DEBUG("itIn is tail ");
+//        DEBUG("itIn is tail ");
 
         return end();
     }
     else if (itIn.itPtr->next == nullptr) // Delete tail 
     {
-        DEBUG("itIn->next is tail ");
+//        DEBUG("itIn->next is tail ");
 
         pop_back();
         return end();
     }
     else
     {
-        DEBUG("itIn not head or tail ");
+//        DEBUG("itIn not head or tail ");
 
         temp = itIn.itPtr->next;
         itIn.itPtr->next = temp->next;
@@ -513,16 +527,16 @@ typename DList<T>::iterator DList<T>::erase_after(const_iterator itIn)
 template<class T>
 typename DList<T>::iterator DList<T>::erase_after(const_iterator itIn1, const_iterator itIn2)
 {
-    DEBUG("\nDList erase after range " );
-    DEBUG("itIn1 = " << *itIn1);
-    DEBUG("itIn2 = " << *itIn2);
+//    DEBUG("\nDList erase after range " );
+//    DEBUG("itIn1 = " << *itIn1);
+//    DEBUG("itIn2 = " << *itIn2);
 
     const_iterator it = iterator(itIn1.itPtr);
 
     while (it != itIn2)
 //    for (const_iterator it = itIn1; it != itIn2; it++)
     {
-        DEBUG("it != itIn2 ");
+//        DEBUG("it != itIn2 ");
 //        DEBUG("it = " << *it);
         it = erase_after(itIn1); 
 //        erase_after(itIn1); 
@@ -531,10 +545,11 @@ typename DList<T>::iterator DList<T>::erase_after(const_iterator itIn1, const_it
     return iterator(it.itPtr);
 
 }
+
 template<class T>
 T& DList<T>::front ()
 {
-    DEBUG("\nDList front " );
+//    DEBUG("\nDList front " );
 
     return head->data;
 }
@@ -542,22 +557,26 @@ T& DList<T>::front ()
 template<class T>
 const T& DList<T>::front () const
 {
-    DEBUG("\nDList const front " );
+//    DEBUG("\nDList const front " );
 
     return head->data;
 }
 
 template<class T>
-typename DList<T>::iterator DList<T>::insert_after(const_iterator position, const T & n)          // Insert after iterator, needs built
+typename DList<T>::iterator DList<T>::insert_after(const_iterator position, const T & n)
 {
     DEBUG("\nDList insert_after ");
     if(head != nullptr)
+    {
         DEBUG("position = " << *position);
+        DEBUG("cbefore_begin = " << *cbefore_begin());
+    }
     DEBUG("n = " << n);
 
     if (head == nullptr || position == cbefore_begin()) // New list
+//    if (head == nullptr || position == cbefore_begin()) // New list
     {
-        DEBUG("New list ");
+        DEBUG("New list/head ");
 
         push_front(n);
         return begin();
@@ -566,7 +585,7 @@ typename DList<T>::iterator DList<T>::insert_after(const_iterator position, cons
     {
         DEBUG("Adding to list ");
 
-        for(const_iterator it = cbefore_begin(); it != end(); ++it) 
+        for(const_iterator it = cbegin(); it != end(); ++it) 
 //        for(const_iterator it = cbegin(); it != end(); ++it) 
         {
             DEBUG("it != end ");
@@ -586,7 +605,9 @@ typename DList<T>::iterator DList<T>::insert_after(const_iterator position, cons
 //                if(it.itPtr->next == nullptr)
                 {
                     DEBUG("it = tail ");
+
                     tail = nnode;
+
                     DEBUG("tail = " << tail->data);
                 }
 
@@ -601,7 +622,7 @@ typename DList<T>::iterator DList<T>::insert_after(const_iterator position, cons
 template<class T>
 void DList<T>::pop_back()
 {
-    DEBUG("\nDList pop_back ");
+//    DEBUG("\nDList pop_back ");
 
     for (node * it = head; it != nullptr; it = it->next)
     {
@@ -609,7 +630,7 @@ void DList<T>::pop_back()
 
         if(it == head && it == tail) // Head and tail
         {
-            DEBUG("popping head and tail ");
+//            DEBUG("popping head and tail ");
 
             temp = head;
             head = nullptr;
@@ -621,14 +642,14 @@ void DList<T>::pop_back()
         }
         else if(it == tail) // Tail
         {
-            DEBUG("poppig tail ");
+//            DEBUG("poppig tail ");
 
             temp = tail;
             node * prev;
 
             for (node * it2 = head; it2->next != nullptr; it2 = it2->next)
             {
-                DEBUG("it2->next != tail ");
+//                DEBUG("it2->next != tail ");
                 prev = it2;
             }
 
@@ -645,7 +666,7 @@ void DList<T>::pop_back()
 template<class T>
 void DList<T>::pop_front()
 {
-    DEBUG("\nDList pop_front ");
+//    DEBUG("\nDList pop_front ");
 
     for (node * it = head; it != nullptr; it = it->next)
     {
@@ -653,7 +674,7 @@ void DList<T>::pop_front()
 
         if(it == head && it == tail) // Head and tail
         {
-            DEBUG("popping head and tail ");
+//            DEBUG("popping head and tail ");
 
             temp = head;
             head = nullptr;
@@ -666,7 +687,7 @@ void DList<T>::pop_front()
         }
         else if(it == head) // Head
         {
-            DEBUG("Popping head ");
+//            DEBUG("Popping head ");
 
             temp = head;
             head = head->next;
@@ -681,7 +702,7 @@ void DList<T>::pop_front()
 template<class T>
 void DList<T>::print() const
 {
-    DEBUG("\nDList print ");
+//    DEBUG("\nDList print ");
     
     node * it = head;
 
@@ -710,8 +731,8 @@ void DList<T>::print() const
 template<class T>
 void DList<T>::push_back(const T & n)
 {
-    DEBUG("\nDList push_back ");
-    DEBUG("n = " << n);
+//    DEBUG("\nDList push_back ");
+//    DEBUG("n = " << n);
 
     node * nnode = new node; 
 
@@ -719,7 +740,7 @@ void DList<T>::push_back(const T & n)
 
     if (head == nullptr) // Case 1: list empty
     {
-        DEBUG("Creating new list ");
+//        DEBUG("Creating new list ");
 
         head = nnode;
         tail = nnode;
@@ -728,8 +749,8 @@ void DList<T>::push_back(const T & n)
     }
     else // Case 2: list not empy
     {
-        DEBUG("Adding to list ");
-        DEBUG("New tail ");
+//        DEBUG("Adding to list ");
+//        DEBUG("New tail ");
 
         tail->next = nnode;
         nnode->prev = tail; 
@@ -743,8 +764,8 @@ void DList<T>::push_back(const T & n)
 template<class T>
 void DList<T>::push_back(T && rhs)
 {
-    DEBUG("\nDList push_back (move) ");
-    DEBUG("rhs = " << rhs);
+//    DEBUG("\nDList push_back (move) ");
+//    DEBUG("rhs = " << rhs);
 
     T temp = rhs;
     rhs = {}; 
@@ -756,8 +777,8 @@ void DList<T>::push_back(T && rhs)
 template<class T>
 void DList<T>::push_front(const T & n)
 {
-    DEBUG("\nDList push_front ");
-    DEBUG("n = " << n);
+//    DEBUG("\nDList push_front ");
+//    DEBUG("n = " << n);
 
     node * nnode = new node; 
 
@@ -765,7 +786,7 @@ void DList<T>::push_front(const T & n)
 
     if (head == nullptr) // Case 1: list empty
     {
-        DEBUG("Creating new list ");
+//        DEBUG("Creating new list ");
 
         head = nnode;
         tail = nnode;
@@ -774,8 +795,8 @@ void DList<T>::push_front(const T & n)
     }
     else // Case 2: list not empy
     {
-        DEBUG("Adding to list ");
-        DEBUG("New head ");
+//        DEBUG("Adding to list ");
+//        DEBUG("New head ");
 
         nnode->next = head;
         head->prev = nnode;
@@ -789,8 +810,8 @@ void DList<T>::push_front(const T & n)
 template<class T>
 void DList<T>::push_front(T && rhs)
 {
-    DEBUG("\nDList push_front (move) ");
-    DEBUG("rhs = " << rhs);
+//    DEBUG("\nDList push_front (move) ");
+//    DEBUG("rhs = " << rhs);
 //bp
 //    node * nnode = new node;
 //    nnode->data = std::move(rhs);
@@ -805,8 +826,8 @@ void DList<T>::push_front(T && rhs)
 template<class T>
 bool DList<T>::remove(const T & x)
 {
-    DEBUG("\nDList remove " );
-    DEBUG("x = " << x);
+//    DEBUG("\nDList remove " );
+//    DEBUG("x = " << x);
 
     T n = x; // Fix for invalid read
 
@@ -814,10 +835,10 @@ bool DList<T>::remove(const T & x)
 
     for (iterator it = begin(); it != end(); ++it)
     {
-        DEBUG("it != tail ");
-        DEBUG("n = " << n);
+//        DEBUG("it != tail ");
+//        DEBUG("n = " << n);
         assert(it != nullptr);
-        DEBUG("it = " << *it);
+//        DEBUG("it = " << *it);
 
         if (*it == n)  
         {
@@ -826,7 +847,7 @@ bool DList<T>::remove(const T & x)
             
             if(it == begin() && ++it == end()) // Head or head and tail
             {
-                DEBUG(n << " is head and tail ");
+//                DEBUG(n << " is head and tail ");
 
                 pop_front(); 
                 it = nullptr;
@@ -835,7 +856,7 @@ bool DList<T>::remove(const T & x)
             }
             else if(it == begin()) // Head
             {
-                DEBUG(n << " is head ");
+//                DEBUG(n << " is head ");
 
                 pop_front(); 
                 it = head;
@@ -843,7 +864,7 @@ bool DList<T>::remove(const T & x)
             }
             else if(it == end()) // Tail
             {
-                DEBUG(n << " is tail ");
+//                DEBUG(n << " is tail ");
 
                 pop_back(); 
                 it = nullptr;
@@ -852,7 +873,7 @@ bool DList<T>::remove(const T & x)
             }
             else // Not head or tail
             {
-                DEBUG(n << " is neither head nor tail ");
+//                DEBUG(n << " is neither head nor tail ");
 
                 erase(it);
                 it = prev;
@@ -863,8 +884,6 @@ bool DList<T>::remove(const T & x)
 
        }
     }
-
-    DEBUG("check ");
 
     if (found == true) 
     {
@@ -883,8 +902,8 @@ bool DList<T>::remove(const T & x)
 template<class T>
 typename DList<T>::const_iterator DList<T>::cSearch(const T & n) const
 {
-    DEBUG("\nDList cSearch ");
-    DEBUG("n = " << n);
+//    DEBUG("\nDList cSearch ");
+//    DEBUG("n = " << n);
 
     for (node * it = head; it != nullptr; it = it->next)
     {
@@ -894,22 +913,23 @@ typename DList<T>::const_iterator DList<T>::cSearch(const T & n) const
        }
     }
 
-    DEBUG("return nullptr ");
+//    DEBUG("return nullptr ");
 
     return nullptr;
 }
 
 template<class T>
-//typename DList<T>::iterator DList<T>::search(T n)
 typename DList<T>::iterator DList<T>::search(const T &n) const
 {
-    DEBUG("\nDList search ");
-    DEBUG("n = " << n);
+//    DEBUG("\nDList search ");
+//    DEBUG("n = " << n);
 
     for (node * it = head; it != nullptr; it = it->next)
     {
        if (it->data == n) 
+       {
            return iterator(it);
+       }
     }
 
     return nullptr;
@@ -918,7 +938,7 @@ typename DList<T>::iterator DList<T>::search(const T &n) const
 template<class T>
 std::size_t DList<T>::size() const noexcept
 {
-    DEBUG("\nDList size ");
+//    DEBUG("\nDList size ");
 
     return listsize;
 }

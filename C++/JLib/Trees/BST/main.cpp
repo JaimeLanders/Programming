@@ -8,11 +8,23 @@ int main ()
     BST<int> bst;
 
     int * num1{};
-    int temp = 1;
+    int * num2{};
+    int * num3{};
+    int temp = 2;
+
     num1 = &temp;
     std::cout << "num1 = " << *num1 << std::endl;
-
     bst.insert(*num1);
+
+    temp = 1;
+    num2 = &temp;
+    std::cout << "num2 = " << *num2 << std::endl;
+    bst.insert(*num2);
+
+    temp = 3;
+    num3 = &temp;
+    std::cout << "num3 = " << *num3 << std::endl;
+    bst.insert(*num3);
 
     return 0;
 }

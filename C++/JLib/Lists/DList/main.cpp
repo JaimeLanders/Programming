@@ -62,29 +62,32 @@ int main ()
 //    std::cout << "front = " << nList.front() << std::endl;
 */
     //iterator testing:
-    
+/*    
      it = nList.insert_after(nList.cbefore_begin(), 100);
      it = nList.insert_after(nList.cbefore_begin(), 69);
      it = nList.insert_after(nList.cbefore_begin(), 101);
      it = nList.insert_after(nList.cbefore_begin(), 77);
      it = nList.insert_after(nList.cbefore_begin(), 53);
-
-/*     it = nList.insert_after(nList.cBegin(), 100);
-    it = nList.insert_after(it, 69);
-    it = nList.insert_after(it, 101);
-    it = nList.insert_after(it, 77);
-    it = nList.insert_after(it, 53);
 */
+    it = nList.insert_after(nList.cbefore_begin(), 100);
+//    it = nList.insert_after(nList.cbegin(), 100);
+//    it = nList.insert_after(nList.cbefore_begin(), 69);
+    it = nList.insert_after(it, 69);
+//    it = nList.insert_after(it, 101);
+//    it = nList.insert_after(it, 77);
+//    it = nList.insert_after(it, 53);
+    std::cout << "it = " << *it << std::endl;
+
     std::cout << "nList size = " << nList.size() << std::endl;;
     nList.print();
 //    std::cout << nList << std::endl; // << Overload testing
 
-    for(it = nList.rbegin(); it != nList.rend(); it++)
+/*    for(it = nList.rbegin(); it != nList.rend(); it--)
     {
         std::cout << "it = " << *it << std::endl;
     }
-   
-    it = nList.search(100);
+*/   
+/*    it = nList.search(100);
 //    it = nList.search(69);
 //    it = nList.search(101);
 //    it = nList.search(77);
@@ -119,7 +122,7 @@ int main ()
     std::cout << "nList size = " << nList.size() << std::endl;;
 
     std::cout << nList << std::endl; // << Overload testing
-
+*/
     // Const testing:
     
 /*    const int cInt = 100;

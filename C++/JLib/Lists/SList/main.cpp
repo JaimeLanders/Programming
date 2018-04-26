@@ -16,8 +16,8 @@ int main ()
     char nString [] = "testing";
     char oString [] = "zzz";
     int loopCt = 100; 
-    SList<int>::Iterator it;
-    SList<int>::Const_Iterator cIt;
+    SList<int>::iterator it;
+    SList<int>::const_iterator cIt;
 
     std::cout << "Welcome to SList Driver " << std::endl;
     
@@ -29,7 +29,7 @@ int main ()
 /*    
     for (int i = 0; i < loopCt; i++) // Stress testing, disable debug
     {
-        nList.insert(i);
+        nList.push_front(i);
     }
 
     std::cout << "nList size = " << nList.size() << std::endl;;
@@ -38,14 +38,13 @@ int main ()
 
 //    std::cout << nList << std::endl; // << Overload testing
 */
-/*    nList.insert(100);
-    nList.insert(69);
-    nList.insert(101);
-    nList.insert(77);
-    nList.insert(53);
+/*    nList.push_front(100);
+    nList.push_front(69);
+    nList.push_front(101);
+    nList.push_front(77);
+    nList.push_front(53);
 
-
-    nList.emplace_front(1, 2, 3, 4, 5);
+//    nList.emplace_front(1, 2, 3, 4, 5);
 
 //    int n = 100;
 //    int * nPtr = &n;
@@ -58,30 +57,31 @@ int main ()
 
     std::cout << "nList size = " << nList.size() << std::endl;;
 
-//    nList.print();
-    std::cout << nList << std::endl; // << Overload testing
+    nList.print();
+//    std::cout << nList << std::endl; // << Overload testing
 //    std::cout << "front = " << nList.front() << std::endl;
 */
-    //Iterator testing:
+    //iterator testing:
 /*    
+     it = nList.push_front_after(nList.cbefore_begin(), 100);
+     it = nList.push_front_after(nList.cbefore_begin(), 69);
+     it = nList.push_front_after(nList.cbefore_begin(), 101);
+     it = nList.push_front_after(nList.cbefore_begin(), 77);
+     it = nList.push_front_after(nList.cbefore_begin(), 53);
+*/
      it = nList.insert_after(nList.cbefore_begin(), 100);
-     it = nList.insert_after(nList.cbefore_begin(), 69);
-     it = nList.insert_after(nList.cbefore_begin(), 101);
-     it = nList.insert_after(nList.cbefore_begin(), 77);
-     it = nList.insert_after(nList.cbefore_begin(), 53);
-
-*//*     it = nList.insert_after(nList.cBegin(), 100);
+//     it = nList.insert_after(nList.cbefore_begin(), 69);
     it = nList.insert_after(it, 69);
-    it = nList.insert_after(it, 101);
-    it = nList.insert_after(it, 77);
-    it = nList.insert_after(it, 53);
-*//*
+//    it = nList.insert_after(it, 101);
+//    it = nList.insert_after(it, 77);
+//    it = nList.insert_after(it, 53);
+    std::cout << "it = " << *it << std::endl;
+
     std::cout << "nList size = " << nList.size() << std::endl;;
     nList.print();
 //    std::cout << nList << std::endl; // << Overload testing
-
    
-    it = nList.search(100);
+/*    it = nList.search(100);
 //    it = nList.search(69);
 //    it = nList.search(101);
 //    it = nList.search(77);
@@ -99,7 +99,7 @@ int main ()
     nList.remove(*it);
 
 //    nList.remove(53);
-//    nList.insert(69); // Test for duplicate removal
+//    nList.push_front(69); // Test for duplicate removal
 //    nList.remove(69);
 //    nList.remove(77);
 //    nList.remove(100);
@@ -121,7 +121,7 @@ int main ()
     
 /*    const int cInt = 100;
 
-    nList.insert(cInt);
+    nList.push_front(cInt);
     cIt = nList.search(cInt);
     std::cout << "cIt = " << *cIt << std::endl;
 //    cIt = nList.search(cInt); No = conversion
@@ -155,14 +155,14 @@ int main ()
     cIt = cList.cSearch(100);
     std::cout << "cIt = " << *cIt << std::endl;
 
-//    cList.insert(101); // passing ‘const SList<int>’ as ‘this’ argument discards qualifiers
+//    cList.push_front(101); // passing ‘const SList<int>’ as ‘this’ argument discards qualifiers
 //    cList.erase(cIt); // passing ‘const SList<int>’ as ‘this’ argument discards qualifiers
 //    cList.remove(*cIt); // passing ‘const SList<int>’ as ‘this’ argument discards qualifiers
 */
     //===================//
     // dList operations: //
     //===================//
-
+/*
     SList<Data<int>> dList;
 
     Data<int> mData;
@@ -180,7 +180,7 @@ int main ()
     std::cout << "nData = " << nData << std::endl; 
 //    dList.emplace_front(nData);
 
-//    dList.insert(nData);
+//    dList.push_front(nData);
 
 //    std::cout << "dList size = " << dList.size() << std::endl;;
 
@@ -189,11 +189,11 @@ int main ()
 
 //    dList.remove(nData);
 
-/*    if (dList.search(nData) == true)
+*//*    if (dList.search(nData) == true)
 //        std::cout << nData << " found" << std::endl;
     else
         std::cout << nData << " not found" << std::endl;
-*/
+*//*
     // Construtor/Assignment Testing
     
     SList<Data<int>> dList2(dList); // Copy constructor
@@ -210,13 +210,13 @@ int main ()
 //    SList<Data<int>> dList2;
 //    dList2 = std::move(dList); // Move assignment overload
 
-    // Insert sort testing
+    // push_front sort testing
     
     mData.setData(321);
-    dList.insert(mData);
+    dList.push_front(mData);
 
     oData.setData(231);
-    dList.insert(oData);
+    dList.push_front(oData);
 
     std::cout << "dList1 size = " << dList.size() << std::endl;;
 
@@ -229,6 +229,6 @@ int main ()
     
 //    dList.pop_back();
 //    dList.pop_front();
-
+*/
     return 0;
 }

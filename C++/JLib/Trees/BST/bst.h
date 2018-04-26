@@ -1,47 +1,108 @@
-/*
- * TODO:
- * -Basic functions
- *  --Default Constructor
- *  --Destructor
- *
+/*  Title:      BST.h
+ *  Creator:    Jaime "jland13" Landers
+ *  Purpose:    Binary Search Tree (BST) for educational purposes and future use
+ *  Sources:    Too many to list
+ * 
+ *  TODO:
+ *  Iterator
+ *      Non Const iterator
+ *      Const iterator
+ *  Rule of 5 
+ *      xDefault Constructor
+ *      Destructor
+ *      Copy Constructor
+ *      Copy Move
+ *      Assignment Move
+ *  Operations
+ *      Insert
+ *      Erase
+ *      Emplace
 */
 
+//Preprocessor
+#ifndef BST_H
+#define BST_H
+
+//Includes:
+#include <algorithm>
+#include <cassert>
 #include <iostream>
 
+// Disable Assertions:
+//#define NDEBUG
+
+//Debug macro:
+#define DList_DEBUG // Comment out to disable debug macros
+#ifdef  DList_DEBUG
+#define DEBUG(x) do { std::cerr << x <<std::endl; } while (0)
+#else
+#define DEBUG(X)
+#endif
+
 template <class T>
-class  BST
+class BST
 {
     struct node
     {
-        T * left;
-        T * right;
+        node * left;
+        node * right;
+        T data;
     } * root;
-
     int size;
-
-//    node * root;
-
 public:
-    BST() : root(nullptr), size(0) { std::cout << "BST default constructor" << std::endl;}
+    BST() : root(nullptr), size(0) { DEBUG("\nBST default constructor");}
     ~BST();
     void insert(T&);
+    void rInsert(T&);
 };
 
 template <class T>
 BST<T>::~BST()
 {
-    std::cout << "BST default destuctor " << std::endl;
+   DEBUG("BST Destructor");
 }
 
 template <class T>
 void BST<T>::insert(T & dataIn)
 {
-    std::cout << "BST insert  " << std::endl;
-    std::cout << "dataIn = " << dataIn << std::endl;
+    DEBUG("\nBST insert  ");
+    DEBUG("dataIn = " << dataIn);
 
     if (root == nullptr)
     {
-        std::cout << "tree is empty " << std::endl;
-//        root->left = *dataIn;
+        DEBUG("tree is empty ");
+        node * nNode = new node;
+        nNode->data = dataIn;
+        root = nNode;
+//        root->data = dataIn;
+        DEBUG("root->data = " << root->data);
+    }
+    else
+    {
+        DEBUG("tree is not empty ");
+        rInsert(dataIn);
     }
 }
+
+template <class T>
+void BST<T>::rInsert(T & dataIn)
+{
+    DEBUG("\nBST rInsert  ");
+    DEBUG("dataIn = " << dataIn);
+//bp1
+    if (dataIn < root->data)
+    {
+        DEBUG("left");
+        node * nNode = new node;
+        nNode->data = dataIn;
+        root->left = nNode;
+    }
+    else
+    {
+        DEBUG("right");
+        node * nNode = new node;
+        nNode->data = dataIn;
+        root->right = nNode;
+    }
+}
+#endif
