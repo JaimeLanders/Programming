@@ -12,8 +12,8 @@ int main ()
     int * num2{};
     int * num3{};
     int numsSize = 10;
-    int nums[numsSize] = {6,3,8,1,5,7,9,0,2,4};
-//    int nums[numsSize] = {0,1,2,3,4,5,6,7,8,9};
+//    int nums[numsSize] = {6,3,8,1,5,7,9,0,2,4};
+    int nums[numsSize] = {0,1,2,3,4,5,6,7,8,9};
 /*    int temp = 2;
 
     num1 = &temp;
@@ -36,15 +36,18 @@ int main ()
     }
 
     it = bst.begin();
-    std::cout << "root = " << *it << std::endl;
+    std::cout << "\nroot = " << *it << std::endl;
 
     if(bst.empty())
     {
-        std::cout << "tree is empty " << std::endl;
+        std::cout << "\ntree is empty " << std::endl;
     }
     else
     {
-        std::cout << "tree is not empty, it's size is " << bst.size() << std::endl;
+        std::cout << "\ntree is not empty, it's size is " << bst.size();
+        std::cout << " and it's structure is: " << std::endl;
+        bst.print();
     }
+    std::cout << "" << std::endl;
     return 0;
 }

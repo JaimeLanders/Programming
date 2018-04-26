@@ -44,10 +44,10 @@
 #include <iostream>
 
 // Disable Assertions:
-//#define NDEBUG
+//#define NDEBUG // Un-comment to disable assertions
 
 //Debug macro:
-#define DList_DEBUG // Comment out to disable debug macros
+//#define DList_DEBUG // Comment out to disable debug macros
 #ifdef  DList_DEBUG
 #define DEBUG(x) do { std::cerr << x <<std::endl; } while (0)
 #else
@@ -144,10 +144,12 @@ public:
         return iterator(nullptr);
     }
     BST() : root(nullptr), treeSize(0) { DEBUG("\nBST default constructor");}
-
+//bp1
     ~BST();
     bool empty() const;
     void insert(const T&);
+    void print() const;
+    T rPrint(node *) const;
     node* rInsert(const T&, node*);
     size_t size() const noexcept;
 }; // end class BST
@@ -199,12 +201,13 @@ typename BST<T>::node* BST<T>::rInsert(const T & dataIn, node * currRoot)
 {
     DEBUG("\nBST rInsert  ");
     DEBUG("dataIn = " << dataIn);
-//bp1
+
     if(!currRoot)
     {
         DEBUG("branch is empty ");
         node * nNode = new node;
         nNode->data = dataIn;
+        currRoot = nNode;
         treeSize++;
     }
     else if (dataIn < currRoot->data)
@@ -219,6 +222,41 @@ typename BST<T>::node* BST<T>::rInsert(const T & dataIn, node * currRoot)
         currRoot->right = rInsert(dataIn, currRoot->right);
     }
     return currRoot;
+}
+
+template <class T>
+void BST<T>::print() const
+{
+    DEBUG("\nBST print ");
+
+    if (root == nullptr)
+    {
+        DEBUG("tree is empty ");
+    }
+    else
+    {
+        DEBUG("tree is not empty ");
+        rPrint(root);
+    }
+}
+
+template <class T>
+T BST<T>::rPrint(node * currRoot) const
+{
+    DEBUG("\nBST rPrint ");
+//bp2
+/*    if(!currRoot)
+    {
+        return 0;
+    }
+    else
+*/    if(currRoot)
+    {
+        std::cout << currRoot->data << std::endl; 
+        rPrint(currRoot->left);
+        rPrint(currRoot->right);
+    }
+    return 0;
 }
 
 template <class T>
