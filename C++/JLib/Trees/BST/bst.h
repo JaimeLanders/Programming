@@ -8,30 +8,35 @@
  *      Non Const iterator X
  *      Const iterator
  *  Rule of 5: 
- *      xDefault Constructor
- *      Destructor
+ *      Default Constructor X
+ *      Destructor X
  *      Copy Constructor
  *      Copy Move
  *      Assignment Move
  *  Capacity:
- *      Empty
- *      Size
+ *      Empty X
+ *      Size X
  *      Max_Size
  *  Modifiers:
- *      Insert
+ *      Insert 
+ *          Insert based off insertion order X
+ *          Inset based off of key value
+ *      Deletenode X
  *      Erase
  *      Swap
- *      Clear
+ *      Clear X
  *      Emplace
  *  Observers:
  *      key_comp
  *      value_comp
  *  Operations:
- *      Print
+ *      Print X
  *      Find
  *      Count
  *  Const Correctness
  *  DRY Everything
+ *  Fix Memory Leaks
+ *  Uninitialized Jumps
 */
 
 //Preprocessor
@@ -47,7 +52,7 @@
 //#define NDEBUG // Un-comment to disable assertions
 
 //Debug macro:
-//#define DList_DEBUG // Comment out to disable debug macros
+#define DList_DEBUG // Comment out to disable debug macros
 #ifdef  DList_DEBUG
 #define DEBUG(x) do { std::cerr << x <<std::endl; } while (0)
 #else
@@ -61,11 +66,17 @@ class BST
 {
     struct node
     {
-        node * left;
-        node * right;
-        T data;
-    } * root;
-    std::size_t treeSize;
+        node*   left;
+        node*   right;
+        T       data;
+    }*          root;
+    size_t      treeSize;
+    void        deleteNode(const node*);
+//bp1
+    node *      rErase(const T&, node*);
+    node*       rInsert(const T&, node*);
+    void        rClear(node * currRoot);
+    T           rPrint(node *) const;
 public:
     class iterator
     {
@@ -144,26 +155,65 @@ public:
         return iterator(nullptr);
     }
     BST() : root(nullptr), treeSize(0) { DEBUG("\nBST default constructor");}
-//bp1
+//bp2
     ~BST();
-    bool empty() const;
-    void insert(const T&);
-    void print() const;
-    T rPrint(node *) const;
-    node* rInsert(const T&, node*);
-    size_t size() const noexcept;
+    void    clear();
+    bool    empty() const;
+    size_t  erase(const T&);
+    void    insert(const T&);
+    void    print() const;
+    size_t  size() const noexcept;
 }; // end class BST
 
 template <class T>
 BST<T>::~BST()
 {
    DEBUG("BST Destructor");
+   this->clear();
+
+}
+
+template <class T>
+void BST<T>::clear()
+{
+//    DEBUG("\nBST clear ");
+
+    if(root) 
+    {
+//        DEBUG("tree is not empty ");
+        rClear(root);
+    }
+
+    root = nullptr;
+    this->treeSize = 0;
+}
+
+template <class T>
+void BST<T>::rClear(node * currRoot)
+{
+//    DEBUG("\nBST rClear ");
+
+    if(currRoot) 
+    {
+//        DEBUG("currRoot is not empty ");
+        rClear(currRoot->left);
+        rClear(currRoot->right);
+        deleteNode(currRoot);
+    }
+}
+
+template <class T>
+void BST<T>::deleteNode(const node * currNode)
+{
+//    DEBUG("\nBST deleteNode  ");
+    assert(currNode != nullptr);
+    delete currNode;
 }
 
 template <class T>
 bool BST<T>::empty() const
 {
-    DEBUG("\nBST empty ");
+//    DEBUG("\nBST empty ");
     
     if(treeSize == 0)
     {
@@ -174,24 +224,103 @@ bool BST<T>::empty() const
 }
 
 template <class T>
+size_t BST<T>::erase(const T& dataIn)
+{
+    DEBUG("\nBST erase ");
+    DEBUG("\ndataIn " << dataIn);
+
+    if (root != nullptr)
+    {
+        DEBUG("tree is not empty ");
+        rErase(dataIn, root);
+
+    }
+    return 0;
+}
+
+template <class T>
+typename BST<T>::node* BST<T>::rErase(const T& dataIn, node* currRoot)
+{
+    DEBUG("\nBST rErase ");
+    DEBUG("dataIn " << dataIn);
+
+    if (currRoot != nullptr)
+    {
+        DEBUG("currRoot is not empty ");
+//        rErase(dataIn, root);
+        if(dataIn == currRoot->data)
+        {
+            DEBUG("dataIn == currRoot->data");
+//bp3
+            if(!currRoot->left && !currRoot->right)
+            {
+                DEBUG("no children");
+                deleteNode(currRoot);
+//                currRoot = nullptr;
+                treeSize--;
+                return nullptr;
+            }
+            else if(!currRoot->right)
+            {
+                DEBUG("no right child ");
+                node * tempNode = currRoot;
+                currRoot->data = currRoot->left->data;
+                currRoot->left->data = tempNode->data;
+//                currRoot = currRoot->right;
+//                currRoot->right = tempNode;
+                delete(currRoot->left);
+//                delete(tempNode);
+                currRoot->left = nullptr;
+                treeSize--;
+            }
+            else
+            {
+                DEBUG("both left and right children or no left child ");
+                node * tempNode = currRoot;
+                currRoot->data = currRoot->right->data;
+                currRoot->right->data = tempNode->data;
+//                currRoot = currRoot->right;
+//                currRoot->right = tempNode;
+                delete(currRoot->right);
+//                delete(tempNode);
+                currRoot->right = nullptr;
+                treeSize--;
+                return currRoot;
+            }
+        }
+        else if (dataIn < currRoot->data)
+        {
+            DEBUG("left");
+            currRoot->left = rErase(dataIn, currRoot->left);
+        }
+        else
+        {
+            DEBUG("right");
+            currRoot->right = rErase(dataIn, currRoot->right);
+        }
+
+    }
+//    return 0;
+}
+template <class T>
 void BST<T>::insert(const T & dataIn)
 {
-    DEBUG("\nBST insert  ");
-    DEBUG("dataIn = " << dataIn);
+//    DEBUG("\nBST insert  ");
+//    DEBUG("dataIn = " << dataIn);
 
     if (root == nullptr)
     {
-        DEBUG("tree is empty ");
+//        DEBUG("tree is empty ");
         node * nNode = new node;
         nNode->data = dataIn;
         root = nNode;
 //        root->data = dataIn;
-        DEBUG("root->data = " << root->data);
+//        DEBUG("root->data = " << root->data);
         treeSize++;
     }
     else
     {
-        DEBUG("tree is not empty ");
+//        DEBUG("tree is not empty ");
         rInsert(dataIn, root);
     }
 }
@@ -199,12 +328,12 @@ void BST<T>::insert(const T & dataIn)
 template <class T>
 typename BST<T>::node* BST<T>::rInsert(const T & dataIn, node * currRoot)
 {
-    DEBUG("\nBST rInsert  ");
-    DEBUG("dataIn = " << dataIn);
+//    DEBUG("\nBST rInsert  ");
+//    DEBUG("dataIn = " << dataIn);
 
     if(!currRoot)
     {
-        DEBUG("branch is empty ");
+//        DEBUG("branch is empty ");
         node * nNode = new node;
         nNode->data = dataIn;
         currRoot = nNode;
@@ -213,12 +342,12 @@ typename BST<T>::node* BST<T>::rInsert(const T & dataIn, node * currRoot)
     else if (dataIn < currRoot->data)
 //    if (dataIn < root->data)
     {
-        DEBUG("left");
+//        DEBUG("left");
         currRoot->left = rInsert(dataIn, currRoot->left);
     }
     else
     {
-        DEBUG("right");
+//        DEBUG("right");
         currRoot->right = rInsert(dataIn, currRoot->right);
     }
     return currRoot;
@@ -227,15 +356,15 @@ typename BST<T>::node* BST<T>::rInsert(const T & dataIn, node * currRoot)
 template <class T>
 void BST<T>::print() const
 {
-    DEBUG("\nBST print ");
+//    DEBUG("\nBST print ");
 
     if (root == nullptr)
     {
-        DEBUG("tree is empty ");
+//        DEBUG("tree is empty ");
     }
     else
     {
-        DEBUG("tree is not empty ");
+//        DEBUG("tree is not empty ");
         rPrint(root);
     }
 }
@@ -243,14 +372,9 @@ void BST<T>::print() const
 template <class T>
 T BST<T>::rPrint(node * currRoot) const
 {
-    DEBUG("\nBST rPrint ");
-//bp2
-/*    if(!currRoot)
-    {
-        return 0;
-    }
-    else
-*/    if(currRoot)
+//    DEBUG("\nBST rPrint ");
+
+    if(currRoot)
     {
         std::cout << currRoot->data << std::endl; 
         rPrint(currRoot->left);
@@ -262,7 +386,7 @@ T BST<T>::rPrint(node * currRoot) const
 template <class T>
 size_t BST<T>::size() const noexcept
 {
-    DEBUG("\nBST size ");
+//    DEBUG("\nBST size ");
 
     return treeSize;
 }

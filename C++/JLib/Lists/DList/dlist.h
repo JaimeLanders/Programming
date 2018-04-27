@@ -472,7 +472,6 @@ void DList<T>::erase(const_iterator itIn)
 
         listsize--;
     }
-
 }
 
 template<class T>
