@@ -22,7 +22,10 @@
  *          Insert based off insertion order X
  *          Inset based off of key value
  *      Deletenode X
- *      Erase
+ *      Erase 
+ *          By value X
+ *          By iterator
+ *          By iterator rage
  *      Swap
  *      Clear X
  *      Emplace
@@ -73,9 +76,12 @@ class BST
     size_t      treeSize;
     void        deleteNode(const node*);
 //bp1
+    node *      getParent(node*, node*);
+    node *      getPred(node*);
+    node *      getSuccessor(node*);
     node *      rErase(const T&, node*);
     node*       rInsert(const T&, node*);
-    void        rClear(node * currRoot);
+    void        rClear(node*);
     T           rPrint(node *) const;
 public:
     class iterator
@@ -247,7 +253,7 @@ typename BST<T>::node* BST<T>::rErase(const T& dataIn, node* currRoot)
     if (currRoot != nullptr)
     {
         DEBUG("currRoot is not empty ");
-//        rErase(dataIn, root);
+
         if(dataIn == currRoot->data)
         {
             DEBUG("dataIn == currRoot->data");
@@ -255,53 +261,92 @@ typename BST<T>::node* BST<T>::rErase(const T& dataIn, node* currRoot)
             if(!currRoot->left && !currRoot->right)
             {
                 DEBUG("no children");
+
                 deleteNode(currRoot);
-//                currRoot = nullptr;
+                currRoot = nullptr;
                 treeSize--;
-                return nullptr;
             }
             else if(!currRoot->right)
             {
                 DEBUG("no right child ");
+
                 node * tempNode = currRoot;
                 currRoot->data = currRoot->left->data;
                 currRoot->left->data = tempNode->data;
-//                currRoot = currRoot->right;
-//                currRoot->right = tempNode;
-                delete(currRoot->left);
-//                delete(tempNode);
+                deleteNode(currRoot->left);
                 currRoot->left = nullptr;
                 treeSize--;
             }
             else
             {
                 DEBUG("both left and right children or no left child ");
-                node * tempNode = currRoot;
-                currRoot->data = currRoot->right->data;
-                currRoot->right->data = tempNode->data;
-//                currRoot = currRoot->right;
-//                currRoot->right = tempNode;
-                delete(currRoot->right);
-//                delete(tempNode);
-                currRoot->right = nullptr;
+
+                node * tempNode = getSuccessor(currRoot->right);
+                DEBUG("tempNode->data = " << tempNode->data);
+
+                currRoot->data = tempNode->data;
+                node* parent = currRoot;
+
+                if(currRoot->right != tempNode)
+                {
+                    parent = getParent(currRoot->right, tempNode);
+                    DEBUG("parent->data = " << parent->data);
+                    parent->left = tempNode->left;
+                }
+                else
+                {
+                    currRoot->right = nullptr;
+                }
+
+                deleteNode(tempNode);
                 treeSize--;
-                return currRoot;
             }
         }
         else if (dataIn < currRoot->data)
         {
             DEBUG("left");
+
             currRoot->left = rErase(dataIn, currRoot->left);
         }
         else
         {
             DEBUG("right");
+
             currRoot->right = rErase(dataIn, currRoot->right);
         }
-
     }
-//    return 0;
+
+    return currRoot; // Fix for compiler warning
 }
+
+template <class T>
+typename BST<T>::node* BST<T>::getParent(node* currRoot, node* child)
+{
+    DEBUG("\nBST getParent  ");
+
+
+    if(currRoot->left != child)
+    {
+        currRoot = getParent(currRoot->left, child);
+    }
+//    else
+
+    return currRoot;
+}
+
+template <class T>
+typename BST<T>::node* BST<T>::getSuccessor(node* currRoot)
+{
+    DEBUG("\nBST getSucc  ");
+
+    if(currRoot->left)
+    {
+        currRoot = getSuccessor(currRoot->left);
+    }
+
+    return currRoot;
+}
+
 template <class T>
 void BST<T>::insert(const T & dataIn)
 {
