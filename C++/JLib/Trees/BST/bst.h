@@ -329,7 +329,6 @@ typename BST<T>::node* BST<T>::getParent(node* currRoot, node* child)
     {
         currRoot = getParent(currRoot->left, child);
     }
-//    else
 
     return currRoot;
 }
@@ -359,7 +358,6 @@ void BST<T>::insert(const T & dataIn)
         node * nNode = new node;
         nNode->data = dataIn;
         root = nNode;
-//        root->data = dataIn;
 //        DEBUG("root->data = " << root->data);
         treeSize++;
     }
@@ -385,7 +383,6 @@ typename BST<T>::node* BST<T>::rInsert(const T & dataIn, node * currRoot)
         treeSize++;
     }
     else if (dataIn < currRoot->data)
-//    if (dataIn < root->data)
     {
 //        DEBUG("left");
         currRoot->left = rInsert(dataIn, currRoot->left);
