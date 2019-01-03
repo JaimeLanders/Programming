@@ -1,0 +1,94 @@
+#!/usr/bin/env python3
+import sys
+
+from gmusicapi import Mobileclient
+
+try:
+    import credentials
+    # credentials.py is in .gitignore and can be shared with other scripts
+    username = credentials.username
+    password = credentials.password
+except ImportError:
+    username = 'username'
+    password = 'password'
+
+try:
+    # optionally hardcode id to workaround https://github.com/simon-weber/gmusicapi/issues/408
+    android_id = credentials.android_id
+except (NameError, AttributeError):
+    android_id = Mobileclient.FROM_MAC_ADDRESS
+
+def get_dupes_in_playlist(playlist):
+   duplicate_Ids = []
+   unique_trackIds = []
+   
+   for track in playlist['tracks']:
+       if track['trackId'] not in unique_trackIds:
+           unique_trackIds.append(track['trackId'])
+
+   for atrack in unique_trackIds:
+       count = 0
+       for btrack in playlist['tracks']:
+           #print(atrack + " b " + btrack['trackId'] )
+           if atrack == btrack['trackId'] :
+               count += 1
+               if count > 1:
+                   duplicate_Ids.append(btrack['id'])
+
+   return duplicate_Ids
+
+def query_yes_no(question, default="yes"):
+    """Ask a yes/no question via input() and return their answer.
+    "question" is a string that is presented to the user.
+    "default" is the presumed answer if the user just hits <Enter>.
+        It must be "yes" (the default), "no" or None (meaning
+        an answer is required of the user).
+    The "answer" return value is one of "yes" or "no".
+    """
+    valid = {"yes":True,   "y":True,  "ye":True,
+             "no":False,     "n":False}
+    if default == None:
+        prompt = " [y/n] "
+    elif default == "yes":
+        prompt = " [Y/n] "
+    elif default == "no":
+        prompt = " [y/N] "
+    else:
+        raise ValueError("invalid default answer: '%s'" % default)
+
+    while True:
+        sys.stdout.write(question + prompt)
+        if sys.version_info[0] < 3:
+            choice = raw_input().lower()
+        else:
+            choice = input().lower()
+        if default is not None and choice == '':
+            return valid[default]
+        elif choice in valid:
+            return valid[choice]
+        else:
+            sys.stdout.write("Please respond with 'yes' or 'no' "\
+                             "(or 'y' or 'n').\n")
+
+
+api = Mobileclient()
+logged_in = api.login(username, password, android_id)
+
+if logged_in:
+    print("Successfully logged in. Beginning duplicate detection process.")
+
+    all_playlists = api.get_all_user_playlist_contents()
+
+    for playlist in all_playlists:
+        #if playlist['name'] == 'aaaDuplicateTest':
+        if 1==1:
+            duplicate_tracks = get_dupes_in_playlist(playlist)
+            if len(duplicate_tracks) > 0:
+                if query_yes_no("Found " + str(len(duplicate_tracks)) + " duplicate tracks in playlist " + playlist['name'] + ". Delete duplicates?", "yes"):
+                    deleted_track_ids = []
+                    deleted_track_ids += api.remove_entries_from_playlist(duplicate_tracks)
+                    print("Successfully deleted " + str(len(deleted_track_ids)) + " tracks of " + playlist['name'] )
+                else:
+                    print("Skipping " + playlist['name'])
+
+    print("Thank you!")

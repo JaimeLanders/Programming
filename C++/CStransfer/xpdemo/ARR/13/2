@@ -1,0 +1,69 @@
+#include "arr.h" 
+
+int table::averageData()
+{
+    std::cout << "\naverageData " << std::endl;
+
+    int average = 0;
+
+    if (head != NULL)
+    {
+        std::cout << "head != NULL " << std::endl;
+
+        average = averageData(0, 0, 0);
+    }
+
+    return average;
+}
+
+int table::averageData(int i, int count, int sum)
+{
+    std::cout << "\naverageData (private, i) " << std::endl;
+
+    int average = 0;
+
+    if (i < size)
+    {
+        std::cout << "head != NULL " << std::endl;
+
+        node * curr = head[i];
+        std::cout << "curr->data = " << curr->data << std::endl;
+
+        count += 1;
+        sum += curr->data;
+
+        average += averageData(curr->next, count, sum);
+
+        i += 1;
+        average += averageData(i, count, sum);
+    }
+    else 
+    {
+        average += sum / count;
+    }
+
+    return average;
+}
+
+int table::averageData(node *& head, int count, int sum)
+{
+    std::cout << "\naverageData (private, head) " << std::endl;
+
+    int average = 0;
+
+    if (head != NULL)
+    {
+        std::cout << "head->data = " << head->data <<  std::endl;
+
+        count += 1;
+
+        average += averageData(head->next, count, sum);
+    }
+    else 
+    {
+        average += sum / count;
+    }
+
+    return average;
+}
+

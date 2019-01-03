@@ -16,6 +16,7 @@
  *  Capacity:
  *      Empty X
  *      Size X
+ *      Height
  *      Max_Size
  *  Modifiers:
  *      Insert 
@@ -33,7 +34,7 @@
  *      key_comp
  *      value_comp
  *  Operations:
- *      Print X
+ *      Print (structure) X
  *      Find
  *      Count
  *  Const Correctness
