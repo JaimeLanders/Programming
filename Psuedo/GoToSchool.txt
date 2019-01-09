@@ -1,0 +1,14 @@
+CurrentTime = Time ; Get's current time and stores to variable
+Loop()
+{
+If CurrentTime = 8 ; Check's if current time is equal to 8:00AM
+    GoToSchool() ; Executes go to school function
+      Print(Leave for School!!!) ; If it's 8:00AM then print reminder to go to school 
+	  break ; Stops the loop after printing the message
+ElseIf CurrentTime <8 ; Checks if current time is less than 8:00AM
+    Return ; If it is less than 8:00AM then start over
+ElseIf CurrentTime >8 ; Checks if it's past 8:00AM
+    Print(You're Late for School!!!) ; Prints a message telling you you're late for school
+	GoToSchool()
+}
+Return
