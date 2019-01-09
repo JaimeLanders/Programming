@@ -1,3 +1,9 @@
+# Extensionless Files (Source/Makeiles, must be first) #
+########################################################
+*
+!/**/
+!*.*
+
 # Compiled source #
 ###################
 *.app
@@ -41,12 +47,6 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
-
-# Extensionless Files (Source/Makeiles) #
-#########################################
-*
-!/**/
-!*.*
 
 # IntelliJ IDEA #
 #################
