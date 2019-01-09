@@ -3,6 +3,7 @@
 *
 !/**/
 !*.*
+!Makefile
 
 # Compiled source #
 ###################
@@ -463,4 +464,3 @@ healthchecksdb
 *.pkh
 *.ctxt
 *.bluej
-.DS_Store
