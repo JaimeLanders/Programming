@@ -456,3 +456,11 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database 
 healthchecksdb
+
+# BlueJ #
+#########
+**/doc
+*.pkh
+*.ctxt
+*.bluej
+.DS_Store
