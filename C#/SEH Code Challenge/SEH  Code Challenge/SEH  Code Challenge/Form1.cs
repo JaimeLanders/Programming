@@ -59,12 +59,12 @@ namespace SEH__Code_Challenge
                 string body = bodyRichTextBox.Text;
 
 /*
-            // Testing
-            string keywords = "Hello World";
-            titleTextBox.Text = keywords;
+                // Testing
+                string keywords = "Hello World";
+                titleTextBox.Text = keywords;
 
-            string body = "My name is **Jaime Landers**, what is **your name** friend?";
-            bodyRichTextBox.Text = body;
+               string body = "My name is **Jaime Landers**, what is **your name** friend?";
+               bodyRichTextBox.Text = body;
 */
                 String result = "";
 
@@ -98,14 +98,14 @@ namespace SEH__Code_Challenge
 
                 // Load images into Windows Form app
                 pictureBox1.Load(images[1]);
-                pictureBox8.Load(images[2]);
-                pictureBox9.Load(images[3]);
-                pictureBox7.Load(images[4]);
-                pictureBox2.Load(images[5]);
-                pictureBox3.Load(images[6]);
-                pictureBox4.Load(images[7]);
-                pictureBox5.Load(images[8]);
-                pictureBox6.Load(images[9]);
+                pictureBox2.Load(images[2]);
+                pictureBox3.Load(images[3]);
+                pictureBox4.Load(images[4]);
+                pictureBox5.Load(images[5]);
+                pictureBox6.Load(images[6]);
+                pictureBox7.Load(images[7]);
+                pictureBox8.Load(images[8]);
+                pictureBox9.Load(images[9]);
             }
         }
 
