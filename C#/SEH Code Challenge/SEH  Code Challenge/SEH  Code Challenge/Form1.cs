@@ -52,7 +52,7 @@ namespace SEH__Code_Challenge
 
         private void bodyRichTextBox_TextChanged(object sender, EventArgs e)
         {
-            MessageBox.Show("Enter body here. Surround text with ** (i.e. **Bold Text**) to make bold");
+
         }
 
         private void getImagesButton_Click(object sender, EventArgs e)
@@ -178,7 +178,6 @@ namespace SEH__Code_Challenge
 
                 if (imageCheckBox1.Checked)
                 {
-//                    image = pictureBox1.ImageLocation;
                     images.Add(pictureBox1.ImageLocation);
                     nChecked++;
                 }
@@ -193,17 +192,35 @@ namespace SEH__Code_Challenge
                     nChecked++;
                 }
                 if (imageCheckBox4.Checked)
+                {
+                    images.Add(pictureBox4.ImageLocation);
                     nChecked++;
+                }
                 if (imageCheckBox5.Checked)
+                {
+                    images.Add(pictureBox5.ImageLocation);
                     nChecked++;
+                }
                 if (imageCheckBox6.Checked)
+                {
+                    images.Add(pictureBox6.ImageLocation);
                     nChecked++;
+                }
                 if (imageCheckBox7.Checked)
+                {
+                    images.Add(pictureBox7.ImageLocation);
                     nChecked++;
+                }
                 if (imageCheckBox8.Checked)
+                {
+                    images.Add(pictureBox8.ImageLocation);
                     nChecked++;
+                }
                 if (imageCheckBox9.Checked)
+                {
+                    images.Add(pictureBox9.ImageLocation);
                     nChecked++;
+                }
 
                 if (nChecked < 3)
                     MessageBox.Show("Please select at least 3 images");
@@ -338,15 +355,17 @@ namespace SEH__Code_Challenge
 
                     //Adds the picture to a slide by specifying its size and position.
                     if ( i == 0)
-                        slide.Shapes.AddPicture(pictureStream, 499.79, 238.59, 140, 140);
+                        slide.Shapes.AddPicture(pictureStream, 199.79, 238.59, 140, 140);
                     else if (i == 1)
-                        slide.Shapes.AddPicture(pictureStream, 299.79, 238.59, 140, 140);
+                        slide.Shapes.AddPicture(pictureStream, 349.79, 238.59, 140, 140);
                     else if (i == 2)
-                        slide.Shapes.AddPicture(pictureStream, 399.79, 238.59, 140, 140);
+                        slide.Shapes.AddPicture(pictureStream, 499.79, 238.59, 140, 140);
                     else 
                         break;
 
                     pictureStream.Close();
+
+                    i++;
                 }
             }
 
