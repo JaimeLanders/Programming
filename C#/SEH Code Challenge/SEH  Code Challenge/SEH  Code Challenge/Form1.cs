@@ -22,7 +22,7 @@ namespace SEH__Code_Challenge
 
         }
 
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        private void imageCheckBox1_CheckedChanged(object sender, EventArgs e)
         {
 
         }
@@ -32,7 +32,17 @@ namespace SEH__Code_Challenge
 
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private void titleTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void bodyRichTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void getImagesButton_Click(object sender, EventArgs e)
         {
 
         }

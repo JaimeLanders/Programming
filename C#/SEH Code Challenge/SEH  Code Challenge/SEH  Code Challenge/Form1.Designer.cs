@@ -35,12 +35,12 @@
             this.label1 = new System.Windows.Forms.Label();
             this.titleLabel = new System.Windows.Forms.Label();
             this.titleTextBox = new System.Windows.Forms.TextBox();
+            this.bodyRichTextBox = new System.Windows.Forms.RichTextBox();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
+            this.imageCheckBox1 = new System.Windows.Forms.CheckBox();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.getImagesButton = new System.Windows.Forms.Button();
-            this.bodyRichTextBox = new System.Windows.Forms.RichTextBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
@@ -95,7 +95,7 @@
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(4, 65);
+            this.label1.Location = new System.Drawing.Point(3, 65);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(54, 20);
             this.label1.TabIndex = 2;
@@ -106,7 +106,7 @@
             this.titleLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.titleLabel.AutoSize = true;
             this.titleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.titleLabel.Location = new System.Drawing.Point(10, 15);
+            this.titleLabel.Location = new System.Drawing.Point(9, 15);
             this.titleLabel.Name = "titleLabel";
             this.titleLabel.Size = new System.Drawing.Size(48, 20);
             this.titleLabel.TabIndex = 0;
@@ -115,11 +115,20 @@
             // titleTextBox
             // 
             this.titleTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.titleTextBox.Location = new System.Drawing.Point(67, 15);
+            this.titleTextBox.Location = new System.Drawing.Point(66, 15);
             this.titleTextBox.Name = "titleTextBox";
             this.titleTextBox.Size = new System.Drawing.Size(705, 20);
             this.titleTextBox.TabIndex = 1;
-            this.titleTextBox.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            this.titleTextBox.TextChanged += new System.EventHandler(this.titleTextBox_TextChanged);
+            // 
+            // bodyRichTextBox
+            // 
+            this.bodyRichTextBox.Location = new System.Drawing.Point(63, 53);
+            this.bodyRichTextBox.Name = "bodyRichTextBox";
+            this.bodyRichTextBox.Size = new System.Drawing.Size(708, 44);
+            this.bodyRichTextBox.TabIndex = 3;
+            this.bodyRichTextBox.Text = "";
+            this.bodyRichTextBox.TextChanged += new System.EventHandler(this.bodyRichTextBox_TextChanged);
             // 
             // tableLayoutPanel3
             // 
@@ -139,24 +148,12 @@
             this.tableLayoutPanel3.Size = new System.Drawing.Size(778, 414);
             this.tableLayoutPanel3.TabIndex = 2;
             // 
-            // checkBox1
-            // 
-            this.checkBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(194, 113);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(56, 15);
-            this.checkBox1.TabIndex = 0;
-            this.checkBox1.Text = "Select";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
-            // 
             // tableLayoutPanel4
             // 
             this.tableLayoutPanel4.ColumnCount = 1;
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel4.Controls.Add(this.checkBox1, 0, 1);
+            this.tableLayoutPanel4.Controls.Add(this.imageCheckBox1, 0, 1);
             this.tableLayoutPanel4.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
             this.tableLayoutPanel4.RowCount = 2;
@@ -164,6 +161,18 @@
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15.60284F));
             this.tableLayoutPanel4.Size = new System.Drawing.Size(253, 131);
             this.tableLayoutPanel4.TabIndex = 1;
+            // 
+            // imageCheckBox1
+            // 
+            this.imageCheckBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.imageCheckBox1.AutoSize = true;
+            this.imageCheckBox1.Location = new System.Drawing.Point(194, 113);
+            this.imageCheckBox1.Name = "imageCheckBox1";
+            this.imageCheckBox1.Size = new System.Drawing.Size(56, 15);
+            this.imageCheckBox1.TabIndex = 0;
+            this.imageCheckBox1.Text = "Select";
+            this.imageCheckBox1.UseVisualStyleBackColor = true;
+            this.imageCheckBox1.CheckedChanged += new System.EventHandler(this.imageCheckBox1_CheckedChanged);
             // 
             // flowLayoutPanel1
             // 
@@ -181,14 +190,7 @@
             this.getImagesButton.TabIndex = 0;
             this.getImagesButton.Text = "Get Images";
             this.getImagesButton.UseVisualStyleBackColor = true;
-            // 
-            // bodyRichTextBox
-            // 
-            this.bodyRichTextBox.Location = new System.Drawing.Point(64, 53);
-            this.bodyRichTextBox.Name = "bodyRichTextBox";
-            this.bodyRichTextBox.Size = new System.Drawing.Size(708, 44);
-            this.bodyRichTextBox.TabIndex = 3;
-            this.bodyRichTextBox.Text = "";
+            this.getImagesButton.Click += new System.EventHandler(this.getImagesButton_Click);
             // 
             // Form1
             // 
@@ -220,7 +222,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox titleTextBox;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox imageCheckBox1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Button getImagesButton;
