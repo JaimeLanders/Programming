@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -11,8 +12,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using HtmlAgilityPack;
-using Microsoft.Office.Core;
-using Microsoft.Office.Interop.PowerPoint;
+//using Microsoft.Office.Core;
+//using Microsoft.Office.Interop.PowerPoint;
+using Syncfusion.Presentation;
 
 namespace SEH__Code_Challenge
 {
@@ -50,7 +52,7 @@ namespace SEH__Code_Challenge
 
         private void bodyRichTextBox_TextChanged(object sender, EventArgs e)
         {
-
+            MessageBox.Show("Enter body here. Surround text with ** (i.e. **Bold Text**) to make bold");
         }
 
         private void getImagesButton_Click(object sender, EventArgs e)
@@ -104,7 +106,7 @@ namespace SEH__Code_Challenge
             keywords = keywords.Replace(' ', '+');
 
             // Get images from Google
-            List<string> images = aGetUris(keywords);
+            List<string> images = getUrls(keywords);
 
             // Load images into Windows Form app
             pictureBox1.Load(images[1]);
@@ -128,7 +130,7 @@ namespace SEH__Code_Challenge
 
         }
      
-        private List<string> aGetUris(string keywords)
+        private List<string> getUrls(string keywords)
         {
             // Source: https://stackoverflow.com/questions/4257359/regular-expression-to-get-the-src-of-images-in-c-sharp/4257450#4257450
 
@@ -171,19 +173,25 @@ namespace SEH__Code_Challenge
             else
             {
                 int nChecked = 0;
-//                List<String> images = null;
-                string image = null;
+                List<string> images = new List<string>();
+//                string image = null;
 
                 if (imageCheckBox1.Checked)
                 {
+//                    image = pictureBox1.ImageLocation;
+                    images.Add(pictureBox1.ImageLocation);
                     nChecked++;
-//                    images.Add(pictureBox1.ImageLocation);
-                    image = pictureBox1.ImageLocation;
                 }
                 if (imageCheckBox2.Checked)
+                {
+                    images.Add(pictureBox2.ImageLocation);
                     nChecked++;
+                }
                 if (imageCheckBox3.Checked)
+                {
+                    images.Add(pictureBox3.ImageLocation);
                     nChecked++;
+                }
                 if (imageCheckBox4.Checked)
                     nChecked++;
                 if (imageCheckBox5.Checked)
@@ -201,37 +209,43 @@ namespace SEH__Code_Challenge
                     MessageBox.Show("Please select at least 3 images");
                 else
                 {
-                    MessageBox.Show(nChecked.ToString());
+//                    MessageBox.Show(nChecked.ToString());
 
-                    createPresentation(titleTextBox.Text, bodyRichTextBox.Text, image);
+                    createPresentation(titleTextBox.Text, bodyRichTextBox.Text, images);
                 }
 
             }
         }
 
-        public void createPresentation(string title, string body, string image)
+        public void createPresentation(string title, string body, List<string> images)
         {
+/*
             Microsoft.Office.Interop.PowerPoint.Application pptApplication = new Microsoft.Office.Interop.PowerPoint.Application();
 
             Microsoft.Office.Interop.PowerPoint.Slides slides;
             Microsoft.Office.Interop.PowerPoint._Slide slide;
             Microsoft.Office.Interop.PowerPoint.TextRange objText;
 
-            string localImage = @"C:\Users\Jaime Landers\Dropbox\Programming\C#\SEH Code Challenge\SEH  Code Challenge\image1.jpg";
 
-            using (WebClient client = new WebClient())
+*//*            using (WebClient client = new WebClient())
             {
+                int i = 0;
+                foreach (string image in images)
+                {
+                    string localImage = @"C:\Users\Jaime Landers\Dropbox\Programming\C#\SEH Code Challenge\SEH  Code Challenge\image{i}.jpg";
 //                client.DownloadFile(new Uri(url), "c:\temp\image35.png");
 //                client.DownloadFile(new Uri(image), "C:\Users\Jaime Landers\Dropbox\Programming\C#\SEH Code Challenge\SEH  Code Challenge\image1.jpg");
-                client.DownloadFile(new Uri(image), localImage);
-                // OR 
+                    client.DownloadFile(new Uri(image), localImage);
+                    // OR 
 //              client.DownloadFileAsync(new Uri(url), @"c:\temp\image35.png");
+                }
             }
-
+*//*
             // Create the Presentation File
             Presentation pptPresentation = pptApplication.Presentations.Add(MsoTriState.msoTrue);
 
-            Microsoft.Office.Interop.PowerPoint.CustomLayout customLayout = pptPresentation.SlideMaster.CustomLayouts[Microsoft.Office.Interop.PowerPoint.PpSlideLayout.ppLayoutText];
+//            Microsoft.Office.Interop.PowerPoint.CustomLayout customLayout = pptPresentation.SlideMaster.CustomLayouts[Microsoft.Office.Interop.PowerPoint.PpSlideLayout.ppLayoutText];
+            Microsoft.Office.Interop.PowerPoint.CustomLayout customLayout = pptPresentation.SlideMaster.CustomLayouts[Microsoft.Office.Interop.PowerPoint.PpSlideLayout.ppLayoutFourObjects];
 
             // Create new Slide
             slides = pptPresentation.Slides;
@@ -248,14 +262,100 @@ namespace SEH__Code_Challenge
 //            objText.Text = "Content goes here\nYou can add text\nItem 3";
             objText.Text = body;
 
-            Microsoft.Office.Interop.PowerPoint.Shape shape = slide.Shapes[2];
+            // Download and add images to slide
+//            Microsoft.Office.Interop.PowerPoint.Shape shape = slide.Shapes[2];
+            Microsoft.Office.Interop.PowerPoint.Shape shape = slide.Shapes[3];
 //            slide.Shapes.AddPicture(@"C: \Users\Jaime Landers\Dropbox\Programming\C#\SEH Code Challenge\SEH  Code Challenge\image1", Microsoft.Office.Core.MsoTriState.msoFalse, Microsoft.Office.Core.MsoTriState.msoTrue, shape.Left, shape.Top, shape.Width, shape.Height);
-            slide.Shapes.AddPicture(localImage, Microsoft.Office.Core.MsoTriState.msoFalse, Microsoft.Office.Core.MsoTriState.msoTrue, shape.Left, shape.Top, shape.Width, shape.Height);
+            using (WebClient client = new WebClient())
+            {
+                int i = 0;
+                foreach (string image in images)
+                {
+//                    string localImage = @"C:\Users\Jaime Landers\Dropbox\Programming\C#\SEH Code Challenge\SEH  Code Challenge\image{i}.jpg";
+                    string localImage = $@"C:\Users\Jaime Landers\Dropbox\Programming\C#\SEH Code Challenge\SEH  Code Challenge\image{i}.jpg";
+//                client.DownloadFile(new Uri(url), "c:\temp\image35.png");
+//                client.DownloadFile(new Uri(image), "C:\Users\Jaime Landers\Dropbox\Programming\C#\SEH Code Challenge\SEH  Code Challenge\image1.jpg");
+                    client.DownloadFile(new Uri(image), localImage);
+//                    slide.Shapes.AddPicture(localImage, Microsoft.Office.Core.MsoTriState.msoFalse, Microsoft.Office.Core.MsoTriState.msoTrue, shape.Left, shape.Top, shape.Width, shape.Height);
+                    slide.Shapes.AddPicture(localImage, Microsoft.Office.Core.MsoTriState.msoFalse, Microsoft.Office.Core.MsoTriState.msoTrue, shape.Left, shape.Top, 140, 140);
+                    // OR 
+//              client.DownloadFileAsync(new Uri(url), @"c:\temp\image35.png");
+                    if ( i == 0)
+                        slide.Shapes.AddPicture(localImage, Microsoft.Office.Core.MsoTriState.msoFalse, Microsoft.Office.Core.MsoTriState.msoTrue, shape.Left, shape.Top, 140, 140);
+                    if (i == 1)
+                        slide.Shapes.AddPicture(localImage, Microsoft.Office.Core.MsoTriState.msoFalse, Microsoft.Office.Core.MsoTriState.msoTrue, shape.Left, shape.Top, 140, 140);
+                    if (i > 2)
+                        break;
+                }
+            }
+
+//            slide.Shapes.AddPicture(localImage, Microsoft.Office.Core.MsoTriState.msoFalse, Microsoft.Office.Core.MsoTriState.msoTrue, shape.Left, shape.Top, shape.Width, shape.Height);
 
             slide.NotesPage.Shapes[2].TextFrame.TextRange.Text = "Test";
             pptPresentation.SaveAs(@"C:\Users\Jaime Landers\Dropbox\Programming\C#\SEH Code Challenge\SEH  Code Challenge", Microsoft.Office.Interop.PowerPoint.PpSaveAsFileType.ppSaveAsDefault, MsoTriState.msoTrue);
             pptPresentation.Close();
             pptApplication.Quit();
+*/
+            //Create a new instance of PowerPoint Presentation file
+            IPresentation pptxDoc = Presentation.Create();
+
+            //Add a new slide to file and apply background color
+            ISlide slide = pptxDoc.Slides.Add(SlideLayoutType.TitleOnly);
+
+            //Specify the fill type and fill color for the slide background 
+            slide.Background.Fill.FillType = FillType.Solid;
+//            slide.Background.Fill.SolidFill.Color = ColorObject.FromArgb(232, 241, 229);
+            slide.Background.Fill.SolidFill.Color = ColorObject.FromArgb(255, 255, 255);
+
+            //Add title content to the slide by accessing the title placeholder of the TitleOnly layout-slide
+            IShape titleShape = slide.Shapes[0] as IShape;
+//            titleShape.TextBody.AddParagraph("Company History").HorizontalAlignment = HorizontalAlignmentType.Center;
+            titleShape.TextBody.AddParagraph(title).HorizontalAlignment = HorizontalAlignmentType.Center;
+
+            //Add description content to the slide by adding a new TextBox
+            IShape descriptionShape = slide.AddTextBox(53.22, 141.73, 874.19, 77.70);
+            //            descriptionShape.TextBody.Text = "IMN Solutions PVT LTD is the software company, established in 1987, by George Milton. The company has been listed as the trusted partner for many high-profile organizations since 1988 and got awards for quality products from reputed organizations.";
+            descriptionShape.TextBody.Text = body;
+
+            //Gets a picture as stream.
+            //            Stream pictureStream = File.Open(@"C:\Users\Jaime Landers\Dropbox\Programming\C#\SEH Code Challenge\SEH  Code Challenge\SEH  Code Challenge\Image.jpg", FileMode.Open);
+
+            //Adds the picture to a slide by specifying its size and position.
+            //            slide.Shapes.AddPicture(pictureStream, 499.79, 238.59, 364.54, 192.16);
+
+            using (WebClient client = new WebClient())
+            {
+                int i = 0;
+                foreach (string image in images)
+                {
+                    string localImage = $@"..\..\image{i}.jpg";
+
+                    client.DownloadFile(new Uri(image), localImage);
+//                    client.DownloadFile(new Uri(images[i]), localImage);
+
+                    //Gets a picture as stream.
+                    Stream pictureStream = File.Open(localImage, FileMode.Open);
+
+                    //Adds the picture to a slide by specifying its size and position.
+                    if ( i == 0)
+                        slide.Shapes.AddPicture(pictureStream, 499.79, 238.59, 140, 140);
+                    else if (i == 1)
+                        slide.Shapes.AddPicture(pictureStream, 299.79, 238.59, 140, 140);
+                    else if (i == 2)
+                        slide.Shapes.AddPicture(pictureStream, 399.79, 238.59, 140, 140);
+                    else 
+                        break;
+
+                    pictureStream.Close();
+                }
+            }
+
+            //Save the PowerPoint Presentation 
+            pptxDoc.Save(@"..\..\SEH Challenge.pptx");
+
+            //Close the PowerPoint presentation
+            pptxDoc.Close();
+
         }
     }
 }
