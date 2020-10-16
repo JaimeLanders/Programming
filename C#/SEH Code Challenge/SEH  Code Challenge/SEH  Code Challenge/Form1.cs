@@ -16,7 +16,9 @@ namespace SEH__Code_Challenge
 
     public partial class Form1 : Form
     {
-        static readonly HttpClient client = new HttpClient();
+//        static readonly HttpClient client = new HttpClient();
+
+        private bool imagesLoaded = false;
 
         public Form1()
         {
@@ -82,7 +84,7 @@ namespace SEH__Code_Challenge
                     rIndex = body.IndexOf("**", lIndex, body.Length - lIndex);
 
                     result = result + body.Substring(lIndex, rIndex - lIndex) + " ";
-                    Console.WriteLine("result = " + result);
+//                    Console.WriteLine("result = " + result);
                     if (rIndex + 2 < body.Length)
                         i = rIndex;
                     else
@@ -146,6 +148,8 @@ namespace SEH__Code_Challenge
                 images.Add(att.Value);
             }
 
+            imagesLoaded = true;
+
             return images;
 
         }
@@ -153,6 +157,41 @@ namespace SEH__Code_Challenge
         private void tableLayoutPanel3_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void generatePowerPointButton_Click(object sender, EventArgs e)
+        {
+            if (!imagesLoaded)
+                MessageBox.Show("Please 'Get Images' before generating PowerPoint");
+            else
+            {
+                int nChecked = 0;
+
+                if (imageCheckBox1.Checked)
+                    nChecked++;
+                if (imageCheckBox2.Checked)
+                    nChecked++;
+                if (imageCheckBox3.Checked)
+                    nChecked++;
+                if (imageCheckBox4.Checked)
+                    nChecked++;
+                if (imageCheckBox5.Checked)
+                    nChecked++;
+                if (imageCheckBox6.Checked)
+                    nChecked++;
+                if (imageCheckBox7.Checked)
+                    nChecked++;
+                if (imageCheckBox8.Checked)
+                    nChecked++;
+                if (imageCheckBox9.Checked)
+                    nChecked++;
+
+                if (nChecked < 3)
+                    MessageBox.Show("Please select at least 3 images");
+                else
+                    MessageBox.Show(nChecked.ToString());
+
+            }
         }
     }
 }
