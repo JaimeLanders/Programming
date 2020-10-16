@@ -54,18 +54,18 @@ namespace SEH__Code_Challenge
             else
             {
 
-
+/*
                 string keywords = titleTextBox.Text;
                 string body = bodyRichTextBox.Text;
+*/
 
-/*
                 // Testing
                 string keywords = "Hello World";
                 titleTextBox.Text = keywords;
 
-               string body = "My name is **Jaime Landers**, what is **your name** friend?";
-               bodyRichTextBox.Text = body;
-*/
+                string body = "My name is **Jaime Landers**, what is **your name** friend?";
+                bodyRichTextBox.Text = body;
+
                 String result = "";
 
                 // Parse body for bold text and add to search keywords
@@ -240,7 +240,57 @@ namespace SEH__Code_Challenge
 
             //Add description content to the slide by adding a new TextBox
             IShape descriptionShape = slide.AddTextBox(53.22, 141.73, 874.19, 77.70);
-            descriptionShape.TextBody.Text = body;
+//            descriptionShape.TextBody.Text = body;
+
+            // Parse bold text in body
+            IParagraph bodyParagraph = descriptionShape.TextBody.AddParagraph();
+/*
+            ITextPart textPart = bodyParagraph.TextParts.Add();
+            textPart.Text = body;
+            textPart.Font.Bold = true;
+*/
+            String regular = "";
+            String bold = "";
+
+            for (int i = 0; i < body.Length; i++)
+            {
+                int lIndex = 0;
+                int rIndex = 0;
+                if (body[i].Equals('*') && body[i + 1].Equals('*'))
+                {
+                    lIndex = i + 2;
+                    rIndex = body.IndexOf("**", lIndex, body.Length - lIndex);
+
+                    bold = bold + body.Substring(lIndex, rIndex - lIndex);
+//                    Console.WriteLine("result = " + result);
+
+                    ITextPart textPart1 = bodyParagraph.TextParts.Add();
+                    textPart1.Text = regular;
+                    textPart1.Font.Bold = false;
+                    regular = "";
+
+                    ITextPart textPart2 = bodyParagraph.TextParts.Add();
+                    textPart2.Text = bold;
+                    textPart2.Font.Bold = true;
+                    bold = "";
+
+
+                    if (rIndex + 2 < body.Length)
+                        i = rIndex + 1;
+                    else
+                        break;
+                }
+                else
+                {
+                    regular = regular + body[i];    
+//                    ITextPart textPart = bodyParagraph.TextParts.Add();
+//                    textPart.Text = bold;
+                }
+            }
+
+            ITextPart textPart = bodyParagraph.TextParts.Add();
+            textPart.Text = regular;
+//            regular = "";
 
             using (WebClient client = new WebClient())
             {
