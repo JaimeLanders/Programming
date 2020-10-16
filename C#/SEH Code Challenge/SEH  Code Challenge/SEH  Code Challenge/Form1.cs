@@ -46,7 +46,8 @@ namespace SEH__Code_Challenge
         {
             if (titleTextBox.Text != null)
             {
-                System.Windows.Forms.MessageBox.Show(titleTextBox.Text);
+                System.Windows.Forms.MessageBox.Show(titleTextBox.Text + "\n" +
+                    bodyRichTextBox.Text);
             }
             else
             {
