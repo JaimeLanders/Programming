@@ -9,7 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using HtmlAgilityPack;
-
+using Microsoft.Office.Core;
+using Microsoft.Office.Interop.PowerPoint;
 
 namespace SEH__Code_Challenge
 {
@@ -67,9 +68,11 @@ namespace SEH__Code_Challenge
 
 //            string keywords = titleTextBox.Text;
             string keywords = "Hello World";
+            titleTextBox.Text = keywords;
 
 //            string body = bodyRichTextBox.Text;
             string body = "My name is **Jaime Landers**, what is **your name** friend?";
+            bodyRichTextBox.Text = body;
 
             String result = "";
 
@@ -144,7 +147,7 @@ namespace SEH__Code_Challenge
             foreach (HtmlNode img in htmlDoc.DocumentNode.SelectNodes("//img"))
             {
                 HtmlAttribute att = img.Attributes["src"];
-                Console.WriteLine("att = " + att.Value);
+//                Console.WriteLine("att = " + att.Value);
                 images.Add(att.Value);
             }
 
@@ -189,9 +192,49 @@ namespace SEH__Code_Challenge
                 if (nChecked < 3)
                     MessageBox.Show("Please select at least 3 images");
                 else
+                {
                     MessageBox.Show(nChecked.ToString());
 
+                    createPresentation(titleTextBox.Text, bodyRichTextBox.Text);
+                }
+
             }
+        }
+
+        public void createPresentation(string title, string body)
+        {
+            Microsoft.Office.Interop.PowerPoint.Application pptApplication = new Microsoft.Office.Interop.PowerPoint.Application();
+
+            Microsoft.Office.Interop.PowerPoint.Slides slides;
+            Microsoft.Office.Interop.PowerPoint._Slide slide;
+            Microsoft.Office.Interop.PowerPoint.TextRange objText;
+
+            // Create the Presentation File
+            Presentation pptPresentation = pptApplication.Presentations.Add(MsoTriState.msoTrue);
+
+            Microsoft.Office.Interop.PowerPoint.CustomLayout customLayout = pptPresentation.SlideMaster.CustomLayouts[Microsoft.Office.Interop.PowerPoint.PpSlideLayout.ppLayoutText];
+
+            // Create new Slide
+            slides = pptPresentation.Slides;
+            slide = slides.AddSlide(1, customLayout);
+
+            // Add title
+            objText = slide.Shapes[1].TextFrame.TextRange;
+//            objText.Text = "FPPT.com";
+            objText.Text = title;
+            objText.Font.Name = "Arial";
+            objText.Font.Size = 32;
+
+            objText = slide.Shapes[2].TextFrame.TextRange;
+//            objText.Text = "Content goes here\nYou can add text\nItem 3";
+            objText.Text = body; 
+
+            slide.NotesPage.Shapes[2].TextFrame.TextRange.Text = "This demo is created by FPPT using C# - Download free templates from http://FPPT.com";
+
+//            pptPresentation.SaveAs(@"c:\temp\fppt.pptx", Microsoft.Office.Interop.PowerPoint.PpSaveAsFileType.ppSaveAsDefault, MsoTriState.msoTrue);
+            pptPresentation.SaveAs(@"C:\Users\Jaime Landers\Dropbox\Programming\C#\SEH Code Challenge\SEH  Code Challenge", Microsoft.Office.Interop.PowerPoint.PpSaveAsFileType.ppSaveAsDefault, MsoTriState.msoTrue);
+            pptPresentation.Close();
+            pptApplication.Quit();
         }
     }
 }

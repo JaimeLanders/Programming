@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+ * Name:    Jaime Landers
+ * Title:   SEH Code Challenge
+ * Date:    10/15/20
+ * Purpose: To demonstrate proficiency in C# for SEH America 
+ * Notes:   None
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
