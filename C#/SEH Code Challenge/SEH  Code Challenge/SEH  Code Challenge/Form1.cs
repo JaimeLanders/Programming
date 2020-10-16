@@ -54,17 +54,8 @@ namespace SEH__Code_Challenge
             else
             {
 
-/*
                 string keywords = titleTextBox.Text;
                 string body = bodyRichTextBox.Text;
-*/
-
-                // Testing
-                string keywords = "Hello World";
-                titleTextBox.Text = keywords;
-
-                string body = "My name is **Jaime Landers**, what is **your name** friend?";
-                bodyRichTextBox.Text = body;
 
                 String result = "";
 
@@ -240,15 +231,10 @@ namespace SEH__Code_Challenge
 
             //Add description content to the slide by adding a new TextBox
             IShape descriptionShape = slide.AddTextBox(53.22, 141.73, 874.19, 77.70);
-//            descriptionShape.TextBody.Text = body;
 
             // Parse bold text in body
             IParagraph bodyParagraph = descriptionShape.TextBody.AddParagraph();
-/*
-            ITextPart textPart = bodyParagraph.TextParts.Add();
-            textPart.Text = body;
-            textPart.Font.Bold = true;
-*/
+
             String regular = "";
             String bold = "";
 
@@ -283,8 +269,6 @@ namespace SEH__Code_Challenge
                 else
                 {
                     regular = regular + body[i];    
-//                    ITextPart textPart = bodyParagraph.TextParts.Add();
-//                    textPart.Text = bold;
                 }
             }
 
