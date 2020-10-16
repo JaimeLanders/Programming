@@ -44,7 +44,14 @@ namespace SEH__Code_Challenge
 
         private void getImagesButton_Click(object sender, EventArgs e)
         {
-
+            if (titleTextBox.Text != null)
+            {
+                System.Windows.Forms.MessageBox.Show(titleTextBox.Text);
+            }
+            else
+            {
+                System.Windows.Forms.MessageBox.Show("Please enter a valid title");
+            }
         }
     }
 }
