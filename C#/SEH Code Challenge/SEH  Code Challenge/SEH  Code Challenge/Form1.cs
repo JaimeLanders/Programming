@@ -4,7 +4,9 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -169,9 +171,15 @@ namespace SEH__Code_Challenge
             else
             {
                 int nChecked = 0;
+//                List<String> images = null;
+                string image = null;
 
                 if (imageCheckBox1.Checked)
+                {
                     nChecked++;
+//                    images.Add(pictureBox1.ImageLocation);
+                    image = pictureBox1.ImageLocation;
+                }
                 if (imageCheckBox2.Checked)
                     nChecked++;
                 if (imageCheckBox3.Checked)
@@ -195,19 +203,30 @@ namespace SEH__Code_Challenge
                 {
                     MessageBox.Show(nChecked.ToString());
 
-                    createPresentation(titleTextBox.Text, bodyRichTextBox.Text);
+                    createPresentation(titleTextBox.Text, bodyRichTextBox.Text, image);
                 }
 
             }
         }
 
-        public void createPresentation(string title, string body)
+        public void createPresentation(string title, string body, string image)
         {
             Microsoft.Office.Interop.PowerPoint.Application pptApplication = new Microsoft.Office.Interop.PowerPoint.Application();
 
             Microsoft.Office.Interop.PowerPoint.Slides slides;
             Microsoft.Office.Interop.PowerPoint._Slide slide;
             Microsoft.Office.Interop.PowerPoint.TextRange objText;
+
+            string localImage = @"C:\Users\Jaime Landers\Dropbox\Programming\C#\SEH Code Challenge\SEH  Code Challenge\image1.jpg";
+
+            using (WebClient client = new WebClient())
+            {
+//                client.DownloadFile(new Uri(url), "c:\temp\image35.png");
+//                client.DownloadFile(new Uri(image), "C:\Users\Jaime Landers\Dropbox\Programming\C#\SEH Code Challenge\SEH  Code Challenge\image1.jpg");
+                client.DownloadFile(new Uri(image), localImage);
+                // OR 
+//              client.DownloadFileAsync(new Uri(url), @"c:\temp\image35.png");
+            }
 
             // Create the Presentation File
             Presentation pptPresentation = pptApplication.Presentations.Add(MsoTriState.msoTrue);
@@ -227,11 +246,13 @@ namespace SEH__Code_Challenge
 
             objText = slide.Shapes[2].TextFrame.TextRange;
 //            objText.Text = "Content goes here\nYou can add text\nItem 3";
-            objText.Text = body; 
+            objText.Text = body;
 
-            slide.NotesPage.Shapes[2].TextFrame.TextRange.Text = "This demo is created by FPPT using C# - Download free templates from http://FPPT.com";
+            Microsoft.Office.Interop.PowerPoint.Shape shape = slide.Shapes[2];
+//            slide.Shapes.AddPicture(@"C: \Users\Jaime Landers\Dropbox\Programming\C#\SEH Code Challenge\SEH  Code Challenge\image1", Microsoft.Office.Core.MsoTriState.msoFalse, Microsoft.Office.Core.MsoTriState.msoTrue, shape.Left, shape.Top, shape.Width, shape.Height);
+            slide.Shapes.AddPicture(localImage, Microsoft.Office.Core.MsoTriState.msoFalse, Microsoft.Office.Core.MsoTriState.msoTrue, shape.Left, shape.Top, shape.Width, shape.Height);
 
-//            pptPresentation.SaveAs(@"c:\temp\fppt.pptx", Microsoft.Office.Interop.PowerPoint.PpSaveAsFileType.ppSaveAsDefault, MsoTriState.msoTrue);
+            slide.NotesPage.Shapes[2].TextFrame.TextRange.Text = "Test";
             pptPresentation.SaveAs(@"C:\Users\Jaime Landers\Dropbox\Programming\C#\SEH Code Challenge\SEH  Code Challenge", Microsoft.Office.Interop.PowerPoint.PpSaveAsFileType.ppSaveAsDefault, MsoTriState.msoTrue);
             pptPresentation.Close();
             pptApplication.Quit();
