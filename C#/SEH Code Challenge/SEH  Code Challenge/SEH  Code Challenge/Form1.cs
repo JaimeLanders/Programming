@@ -50,6 +50,8 @@ namespace SEH__Code_Challenge
 
         private void getImagesButton_Click(object sender, EventArgs e)
         {
+/*
+            // Get title and body from Windows Forms
             if (titleTextBox.Text != null)
             {
                 System.Windows.Forms.MessageBox.Show(titleTextBox.Text + "\n" +
@@ -59,14 +61,45 @@ namespace SEH__Code_Challenge
             {
                 System.Windows.Forms.MessageBox.Show("Please enter a valid title");
             }
+*/
 
-//            string keywords = "hello+world";
+//            string keywords = titleTextBox.Text;
+            string keywords = "Hello World";
 
-            string keywords = titleTextBox.Text;
+//            string body = bodyRichTextBox.Text;
+            string body = "My name is **Jaime Landers**, what is **your name** friend?";
+
+            String result = "";
+
+            // Parse body for bold text and add to search keywords
+            for (int i = 0; i < body.Length; i++)
+            {
+                int lIndex = 0;
+                int rIndex = 0;
+                if (body[i].Equals('*') && body[i + 1].Equals('*'))
+                {
+                    lIndex = i + 2;
+                    rIndex = body.IndexOf("**", lIndex, body.Length - lIndex);
+
+                    result = result + body.Substring(lIndex, rIndex - lIndex) + " ";
+                    Console.WriteLine("result = " + result);
+                    if (rIndex + 2 < body.Length)
+                        i = rIndex;
+                    else
+                        break;
+                }
+            }
+
+            // Add body keywords to title
+            keywords = keywords + " " + result;
+
+            // Format keywords for Google search URL
             keywords = keywords.Replace(' ', '+');
 
+            // Get images from Google
             List<string> images = aGetUris(keywords);
 
+            // Load images into Windows Form app
             pictureBox1.Load(images[1]);
             pictureBox8.Load(images[2]);
             pictureBox9.Load(images[3]);
