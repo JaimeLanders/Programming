@@ -1,3 +1,3 @@
 fizzbuzz::fizzbuzz.cpp
-	g++ -o fizzbuzz fizzbuzz.cpp
+	g++ -g -o fizzbuzz.o fizzbuzz.cpp
 
