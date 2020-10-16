@@ -226,7 +226,7 @@ namespace SEH__Code_Challenge
                     MessageBox.Show("Please select at least 3 images");
                 else
                 {
-//                    MessageBox.Show(nChecked.ToString());
+                    MessageBox.Show("PowerPoint Saved as \"SEH Challenge.pptx\"");
 
                     createPresentation(titleTextBox.Text, bodyRichTextBox.Text, images);
                 }
